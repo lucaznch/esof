@@ -162,6 +162,7 @@ public class Suggestion {
         applicationBeforeStartDate();
         startBeforeEnd();
         descriptionLength();
+        nameIsUniqueForVolunteer();
     }
 
     private void nameIsRequired() {
