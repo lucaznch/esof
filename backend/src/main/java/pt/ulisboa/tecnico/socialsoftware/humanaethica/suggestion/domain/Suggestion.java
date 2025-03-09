@@ -161,6 +161,7 @@ public class Suggestion {
         endingDateIsRequired();
         applicationBeforeStartDate();
         startBeforeEnd();
+        descriptionLength();
     }
 
     private void nameIsRequired() {
@@ -208,6 +209,12 @@ public class Suggestion {
     private void startBeforeEnd() {
         if (!this.startingDate.isBefore(this.endingDate)) {
             throw new HEException(SUGGESTION_START_AFTER_END);
+        }
+    }
+
+    private void descriptionLength() {
+        if (this.description.length() < 10) {
+            throw new HEException(SUGGESTION_DESCRIPTION_LENGTH_INVALID);
         }
     }
 }

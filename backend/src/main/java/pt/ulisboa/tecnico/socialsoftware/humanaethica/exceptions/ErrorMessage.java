@@ -74,6 +74,7 @@ public enum ErrorMessage {
     SUGGESTION_INVALID_DATE("Date format for %s is invalid"),
     SUGGESTION_APPLICATION_DEADLINE_AFTER_START("Suggestion Enrollment deadline is after start"),
     SUGGESTION_START_AFTER_END("Suggestion start is after end"),
+    SUGGESTION_DESCRIPTION_LENGTH_INVALID("Suggestion description must have at least 10 characters"),
     ;
 
     public final String label;
