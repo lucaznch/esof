@@ -76,6 +76,7 @@ public enum ErrorMessage {
     SUGGESTION_START_AFTER_END("Suggestion start is after end"),
     SUGGESTION_DESCRIPTION_LENGTH_INVALID("Suggestion description must have at least 10 characters"),
     SUGGESTION_NAME_UNIQUE_FOR_VOLUNTEER("Suggestion name must be unique for volunteer"),
+    SUGGESTION_APPLICATION_DEADLINE_AFTER_CREATION("Suggestion application deadline must be at least 7 days after the creation date"),
     ;
 
     public final String label;

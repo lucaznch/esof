@@ -163,6 +163,7 @@ public class Suggestion {
         startBeforeEnd();
         descriptionLength();
         nameIsUniqueForVolunteer();
+        applicationDeadlineAfterCreation();
     }
 
     private void nameIsRequired() {
@@ -222,6 +223,14 @@ public class Suggestion {
     private void nameIsUniqueForVolunteer() {       
         if (this.volunteer.getSuggestions().stream().anyMatch(s -> s.getName().equals(this.name))) {
             throw new HEException(SUGGESTION_NAME_UNIQUE_FOR_VOLUNTEER, this.name);
+        }
+    }
+
+    private void applicationDeadlineAfterCreation() {
+        if (this.creationDate != null && this.applicationDeadline != null) {
+            if (!this.applicationDeadline.isAfter(this.creationDate.plusDays(7))) {
+                throw new HEException(SUGGESTION_APPLICATION_DEADLINE_AFTER_CREATION);
+            }
         }
     }
 }
