@@ -2,7 +2,9 @@ package pt.ulisboa.tecnico.socialsoftware.humanaethica.suggestion.domain;
 
 import jakarta.persistence.*;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.institution.domain.Institution;
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.suggestion.dto.SuggestionDto;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.domain.Volunteer;
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.utils.DateHandler;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.HEException;
 
 import static pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.ErrorMessage.*;
@@ -38,6 +40,22 @@ public class Suggestion {
     private Volunteer volunteer;
 
     public Suggestion() {
+    }
+
+    public Suggestion(SuggestionDto suggestionDto, Institution institution, Volunteer volunteer) {
+        setParticipantsNumberLimit(suggestionDto.getParticipantsNumberLimit());
+        setName(suggestionDto.getName());
+        setDescription(suggestionDto.getDescription());
+        setRegion(suggestionDto.getRegion());
+        setCreationDate(DateHandler.now());
+        setStartingDate(DateHandler.toLocalDateTime(suggestionDto.getStartingDate()));
+        setEndingDate(DateHandler.toLocalDateTime(suggestionDto.getEndingDate()));
+        setApplicationDeadline(DateHandler.toLocalDateTime(suggestionDto.getApplicationDeadline()));
+        setState(Suggestion.State.valueOf(suggestionDto.getState()));
+        setInstitution(institution);
+        setVolunteer(volunteer);
+
+        verifyInvariants();
     }
 
     public Integer getId() {
