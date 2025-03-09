@@ -217,4 +217,10 @@ public class Suggestion {
             throw new HEException(SUGGESTION_DESCRIPTION_LENGTH_INVALID);
         }
     }
+
+    private void nameIsUniqueForVolunteer() {       
+        if (this.volunteer.getSuggestions().stream().anyMatch(s -> s.getName().equals(this.name))) {
+            throw new HEException(SUGGESTION_NAME_UNIQUE_FOR_VOLUNTEER, this.name);
+        }
+    }
 }
