@@ -100,6 +100,10 @@ public class Volunteer extends User {
         this.reports = reports;
     }
 
+    public List<Suggestion> getSuggestions() {
+        return suggestions;
+    }
+
     public void addSuggestion(Suggestion suggestion) {
         this.suggestions.add(suggestion);
     }
