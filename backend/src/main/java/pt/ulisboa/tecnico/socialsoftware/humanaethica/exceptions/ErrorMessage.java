@@ -66,6 +66,14 @@ public enum ErrorMessage {
     REPORT_ACTIVTIY_IS_ALREADY_REPORTED("The activity is already reported"),
     REPORT_AFTER_ACTIVTY_CLOSED("The activity period is already closed"),
     REPORT_NOT_FOUND("Report not found with id %d"),
+
+    // Suggestion
+    SUGGESTION_NAME_INVALID("Suggestion Name: %s, is not valid"),
+    SUGGESTION_DESCRIPTION_INVALID("Suggestion description is missing"),
+    SUGGESTION_REGION_NAME_INVALID("Region Name: %s, is not valid"),
+    SUGGESTION_INVALID_DATE("Date format for %s is invalid"),
+    SUGGESTION_APPLICATION_DEADLINE_AFTER_START("Suggestion Enrollment deadline is after start"),
+    SUGGESTION_START_AFTER_END("Suggestion start is after end"),
     ;
 
     public final String label;
