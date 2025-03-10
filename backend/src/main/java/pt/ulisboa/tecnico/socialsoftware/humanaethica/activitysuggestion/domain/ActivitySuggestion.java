@@ -1,10 +1,10 @@
-package pt.ulisboa.tecnico.socialsoftware.humanaethica.suggestion.domain;
+package pt.ulisboa.tecnico.socialsoftware.humanaethica.activitysuggestion.domain;
 
 import jakarta.persistence.*;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.institution.domain.Institution;
-import pt.ulisboa.tecnico.socialsoftware.humanaethica.suggestion.dto.SuggestionDto;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.domain.Volunteer;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.utils.DateHandler;
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.activitysuggestion.dto.ActivitySuggestionDto;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.HEException;
 
 import static pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.ErrorMessage.*;
@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "suggestion")
-public class Suggestion {
+public class ActivitySuggestion {
     public enum State {APPROVED, REJECTED, IN_REVIEW}
 
     @Id
@@ -31,7 +31,7 @@ public class Suggestion {
     private LocalDateTime applicationDeadline;
 
     @Enumerated(EnumType.STRING)
-    private Suggestion.State state = Suggestion.State.IN_REVIEW;    // default state
+    private ActivitySuggestion.State state = ActivitySuggestion.State.IN_REVIEW;    // default state
 
     @ManyToOne
     private Institution institution;
@@ -39,10 +39,10 @@ public class Suggestion {
     @ManyToOne
     private Volunteer volunteer;
 
-    public Suggestion() {
+    public ActivitySuggestion() {
     }
 
-    public Suggestion(SuggestionDto suggestionDto, Institution institution, Volunteer volunteer) {
+    public ActivitySuggestion(ActivitySuggestionDto suggestionDto, Institution institution, Volunteer volunteer) {
         setParticipantsNumberLimit(suggestionDto.getParticipantsNumberLimit());
         setName(suggestionDto.getName());
         setDescription(suggestionDto.getDescription());
@@ -51,7 +51,7 @@ public class Suggestion {
         setStartingDate(DateHandler.toLocalDateTime(suggestionDto.getStartingDate()));
         setEndingDate(DateHandler.toLocalDateTime(suggestionDto.getEndingDate()));
         setApplicationDeadline(DateHandler.toLocalDateTime(suggestionDto.getApplicationDeadline()));
-        setState(Suggestion.State.valueOf(suggestionDto.getState()));
+        setState(ActivitySuggestion.State.valueOf(suggestionDto.getState()));
         setInstitution(institution);
         setVolunteer(volunteer);
 
@@ -126,11 +126,11 @@ public class Suggestion {
         this.applicationDeadline = applicationDeadline;
     }
 
-    public Suggestion.State getState() {
+    public ActivitySuggestion.State getState() {
         return state;
     }
 
-    public void setState(Suggestion.State state) {
+    public void setState(ActivitySuggestion.State state) {
         this.state = state;
     }
 
@@ -140,7 +140,7 @@ public class Suggestion {
 
     public void setInstitution(Institution institution) {
         this.institution = institution;
-        institution.addSuggestion(this);
+        institution.addActivitySuggestion(this);
     }
 
     public Volunteer getVolunteer() {
@@ -149,7 +149,7 @@ public class Suggestion {
 
     public void setVolunteer(Volunteer volunteer) {
         this.volunteer = volunteer;
-        volunteer.addSuggestion(this);
+        volunteer.addActivitySuggestion(this);
     }
 
     private void verifyInvariants() {
@@ -221,7 +221,7 @@ public class Suggestion {
     }
 
     private void nameIsUniqueForVolunteer() {       
-        if (this.volunteer.getSuggestions().stream().anyMatch(s -> s.getName().equals(this.name))) {
+        if (this.volunteer.getActivitySuggestions().stream().anyMatch(s -> s.getName().equals(this.name))) {
             throw new HEException(SUGGESTION_NAME_UNIQUE_FOR_VOLUNTEER, this.name);
         }
     }

@@ -1,12 +1,12 @@
 package pt.ulisboa.tecnico.socialsoftware.humanaethica.user.domain;
 
 import jakarta.persistence.*;
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.activitysuggestion.domain.ActivitySuggestion;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.assessment.domain.Assessment;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.enrollment.domain.Enrollment;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.auth.domain.AuthUser;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.participation.domain.Participation;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.report.domain.Report;
-import pt.ulisboa.tecnico.socialsoftware.humanaethica.suggestion.domain.Suggestion;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ public class Volunteer extends User {
     private List<Report> reports = new ArrayList<>();
 
     @OneToMany(mappedBy = "volunteer")
-    private List<Suggestion> suggestions = new ArrayList<>();
+    private List<ActivitySuggestion> activitySuggestions = new ArrayList<>();
 
     public Volunteer() {
     }
@@ -100,15 +100,15 @@ public class Volunteer extends User {
         this.reports = reports;
     }
 
-    public List<Suggestion> getSuggestions() {
-        return suggestions;
+    public List<ActivitySuggestion> getActivitySuggestions() {
+        return activitySuggestions;
     }
 
-    public void addSuggestion(Suggestion suggestion) {
-        this.suggestions.add(suggestion);
+    public void addActivitySuggestion(ActivitySuggestion suggestion) {
+        this.activitySuggestions.add(suggestion);
     }
 
-    public void removeSuggestion(Suggestion suggestion) {   // needed?
-        this.suggestions.remove(suggestion);
+    public void removeActivitySuggestion(ActivitySuggestion suggestion) {   // needed?
+        this.activitySuggestions.remove(suggestion);
     }
 }

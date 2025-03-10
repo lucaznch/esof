@@ -1,11 +1,11 @@
-package pt.ulisboa.tecnico.socialsoftware.humanaethica.suggestion.dto;
+package pt.ulisboa.tecnico.socialsoftware.humanaethica.activitysuggestion.dto;
 
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.activitysuggestion.domain.ActivitySuggestion;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.institution.dto.InstitutionDto;
-import pt.ulisboa.tecnico.socialsoftware.humanaethica.suggestion.domain.Suggestion;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.dto.UserDto;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.utils.DateHandler;
 
-public class SuggestionDto {
+public class ActivitySuggestionDto {
     private Integer id;
     private Integer participantsNumberLimit;
     private String name;
@@ -19,10 +19,10 @@ public class SuggestionDto {
     private InstitutionDto institution;
     private UserDto volunteer;
 
-    public SuggestionDto() {
+    public ActivitySuggestionDto() {
     }
 
-    public SuggestionDto(Suggestion suggestion, boolean deepCopyInstitution, boolean deepCopyVolunteer) {
+    public ActivitySuggestionDto(ActivitySuggestion suggestion, boolean deepCopyInstitution, boolean deepCopyVolunteer) {
         setId(suggestion.getId());
         setParticipantsNumberLimit(suggestion.getParticipantsNumberLimit());
         setName(suggestion.getName());
