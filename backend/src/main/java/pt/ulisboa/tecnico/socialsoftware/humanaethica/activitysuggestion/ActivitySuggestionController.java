@@ -22,29 +22,29 @@ import java.util.List;
 
 
 
-// what is Principal?
 @RestController
-@RequestMapping("/suggestions")
+@RequestMapping("/activitysuggestions")
 public class ActivitySuggestionController {
 
     @Autowired
-    private ActivitySuggestionService suggestionService;
+    private ActivitySuggestionService activitySuggestionService;
 
     private static final Logger logger = LoggerFactory.getLogger(ActivitySuggestionController.class);
     
 
     @GetMapping()
     public List<ActivitySuggestionDto> getSuggestions(Principal principal) {
-        return suggestionService.getSuggestions();
+        return activitySuggestionService.getActivitySuggestions();
     }
 
     @PostMapping()
     @PreAuthorize("(hasRole('ROLE_VOLUNTEER'))")
-    public ActivitySuggestionDto registerSuggestion(Principal principal, @Valid @RequestBody ActivitySuggestionDto suggestionDto){
+    public ActivitySuggestionDto registerActivitySuggestion(Principal principal, @Valid @RequestBody ActivitySuggestionDto activitySuggestionDto){
+        
         int userId = ((AuthUser) ((Authentication) principal).getPrincipal()).getUser().getId();
 
-        int institutionId = 1; // how to get institutionId?
+        int institutionId = activitySuggestionDto.getInstitution().getId();
 
-        return suggestionService.registerSuggestion(userId, institutionId, suggestionDto);
+        return activitySuggestionService.registerActivitySuggestion(userId, institutionId, activitySuggestionDto);
     }
 }
