@@ -53,7 +53,6 @@ public class ActivitySuggestion {
         setStartingDate(DateHandler.toLocalDateTime(activitySuggestionDto.getStartingDate()));
         setEndingDate(DateHandler.toLocalDateTime(activitySuggestionDto.getEndingDate()));
         setApplicationDeadline(DateHandler.toLocalDateTime(activitySuggestionDto.getApplicationDeadline()));
-        setState(ActivitySuggestion.State.valueOf(activitySuggestionDto.getState()));
         setInstitution(institution);
         setVolunteer(volunteer);
 
