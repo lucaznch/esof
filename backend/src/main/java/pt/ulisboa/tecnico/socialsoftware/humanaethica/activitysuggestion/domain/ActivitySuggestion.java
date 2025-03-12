@@ -226,5 +226,11 @@ public class ActivitySuggestion {
             throw new HEException(ACTIVITY_SUGGESTION_NAME_UNIQUE_FOR_VOLUNTEER);
         }
     }
+
+    private void applicationDeadlineAfterCreation() {
+        if (this.creationDate != null && this.applicationDeadline != null && !this.applicationDeadline.isAfter(this.creationDate.plusDays(7))) {
+            throw new HEException(ACTIVITY_SUGGESTION_APPLICATION_DEADLINE_AFTER_CREATION);
+        }
+    }
 }
 
