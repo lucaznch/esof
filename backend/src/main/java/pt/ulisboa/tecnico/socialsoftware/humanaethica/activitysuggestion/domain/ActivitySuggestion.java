@@ -220,7 +220,8 @@ public class ActivitySuggestion {
         }
     }
 
-    private void nameIsUniqueForVolunteer() {       
+    private void nameIsUniqueForVolunteer() {
+        if (this.volunteer.getActivitySuggestions() == null) { return; }
         if (this.volunteer.getActivitySuggestions().stream().anyMatch(s -> s.getName().equals(this.name))) {
             throw new HEException(ACTIVITY_SUGGESTION_NAME_UNIQUE_FOR_VOLUNTEER);
         }

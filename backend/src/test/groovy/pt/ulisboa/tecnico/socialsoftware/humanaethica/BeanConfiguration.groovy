@@ -79,6 +79,11 @@ class BeanConfiguration {
     }
 
     @Bean
+    ActivitySuggestionService activitySuggestionService() {
+        return new ActivitySuggestionService()
+    }
+
+    @Bean
     ActivitySuggestionsService activitySuggestionsService() {
         return new ActivitySuggestionsService()
     }
