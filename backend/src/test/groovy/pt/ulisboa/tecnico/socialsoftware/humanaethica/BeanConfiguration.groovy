@@ -83,6 +83,7 @@ class BeanConfiguration {
         return new ActivitySuggestionsService()
     }
 
+
     @Bean
     EnrollmentService enrollmentService() {
         return new EnrollmentService()
