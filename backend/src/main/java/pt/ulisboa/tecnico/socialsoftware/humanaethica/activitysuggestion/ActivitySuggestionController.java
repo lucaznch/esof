@@ -4,10 +4,6 @@ import pt.ulisboa.tecnico.socialsoftware.humanaethica.activitysuggestion.dto.Act
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.auth.domain.AuthUser;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -33,18 +29,38 @@ public class ActivitySuggestionController {
     
 
     @GetMapping()
-    public List<ActivitySuggestionDto> getSuggestions(Principal principal) {
+    public List<ActivitySuggestionDto> getActivitySuggestions(Principal principal) {
         return activitySuggestionService.getActivitySuggestions();
     }
 
+    // why not @Valid ???
+    @GetMapping("/{id}")
+    public List<ActivitySuggestionDto> getActivitySuggestions(@PathVariable Integer institutionId) {
+        return activitySuggestionService.getActivitySuggestionsByInstitution(institutionId);
+    }
+
+
+/*
+
+    para logica segunda story!
+
+    @PutMapping("/{activityId}")
+    @PreAuthorize("hasRole('ROLE_MEMBER') and hasPermission(#activityId, 'ACTIVITY.MEMBER')")
+    public ActivityDto updateActivity(@PathVariable int activityId, @Valid @RequestBody ActivityDto activityDto){
+        return activityService.updateActivity(activityId, activityDto);
+    }
+
+*/
+
+
     @PostMapping()
     @PreAuthorize("(hasRole('ROLE_VOLUNTEER'))")
-    public ActivitySuggestionDto registerActivitySuggestion(Principal principal, @Valid @RequestBody ActivitySuggestionDto activitySuggestionDto){
+    public ActivitySuggestionDto createActivitySuggestion(Principal principal, @Valid @RequestBody ActivitySuggestionDto activitySuggestionDto){
         
         int userId = ((AuthUser) ((Authentication) principal).getPrincipal()).getUser().getId();
 
         int institutionId = activitySuggestionDto.getInstitution().getId();
 
-        return activitySuggestionService.registerActivitySuggestion(userId, institutionId, activitySuggestionDto);
+        return activitySuggestionService.createActivitySuggestion(userId, institutionId, activitySuggestionDto);
     }
 }

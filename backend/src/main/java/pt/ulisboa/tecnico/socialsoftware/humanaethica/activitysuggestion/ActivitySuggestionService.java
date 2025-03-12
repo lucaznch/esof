@@ -39,11 +39,19 @@ public class ActivitySuggestionService {
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
-    public ActivitySuggestionDto registerActivitySuggestion(Integer userId, Integer institutionId, ActivitySuggestionDto suggestionDto) {
-        if (userId == null) throw new HEException(USER_NOT_FOUND);
+    public List<ActivitySuggestionDto> getActivitySuggestionsByInstitution(Integer institutionId) {
+        return suggestionRepository.getActivitiesByInstitutionId(institutionId).stream()
+                .map(suggestion -> new ActivitySuggestionDto(suggestion, true, true))
+                .sorted(Comparator.comparing(ActivitySuggestionDto::getName, String.CASE_INSENSITIVE_ORDER))
+                .toList();
+    }
 
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public ActivitySuggestionDto createActivitySuggestion(Integer userId, Integer institutionId, ActivitySuggestionDto suggestionDto) {
+        if (userId == null) throw new HEException(USER_NOT_FOUND);
         Volunteer volunteer = (Volunteer) userRepository.findById(userId).orElseThrow(() -> new HEException(USER_NOT_FOUND, userId));
 
+        if (institutionId == null) throw new HEException(INSTITUTION_NOT_FOUND);
         Institution institution = (Institution) institutionRepository.findById(institutionId).orElseThrow(() -> new HEException(INSTITUTION_NOT_FOUND, institutionId));
 
         ActivitySuggestion suggestion = new ActivitySuggestion(suggestionDto, institution, volunteer);
