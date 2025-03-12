@@ -165,6 +165,7 @@ public class ActivitySuggestion {
         startBeforeEnd();
         descriptionLength();
         nameIsUniqueForVolunteer();
+        applicationDeadlineAfterCreation();
     }
 
     private void nameIsRequired() {
