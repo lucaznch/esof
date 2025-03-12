@@ -3,6 +3,8 @@ package pt.ulisboa.tecnico.socialsoftware.humanaethica.activitysuggestion.domain
 import jakarta.persistence.*;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.institution.domain.Institution;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.domain.Volunteer;
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.utils.DateHandler;
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.activitysuggestion.dto.ActivitySuggestionDto;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.HEException;
 
 import static pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.ErrorMessage.*;
@@ -40,6 +42,22 @@ public class ActivitySuggestion {
 
 
     public ActivitySuggestion() {
+    }
+
+    public ActivitySuggestion(Institution institution, Volunteer volunteer, ActivitySuggestionDto activitySuggestionDto) {
+        setParticipantsNumberLimit(activitySuggestionDto.getParticipantsNumberLimit());
+        setName(activitySuggestionDto.getName());
+        setDescription(activitySuggestionDto.getDescription());
+        setRegion(activitySuggestionDto.getRegion());
+        setCreationDate(DateHandler.now());
+        setStartingDate(DateHandler.toLocalDateTime(activitySuggestionDto.getStartingDate()));
+        setEndingDate(DateHandler.toLocalDateTime(activitySuggestionDto.getEndingDate()));
+        setApplicationDeadline(DateHandler.toLocalDateTime(activitySuggestionDto.getApplicationDeadline()));
+        setState(ActivitySuggestion.State.valueOf(activitySuggestionDto.getState()));
+        setInstitution(institution);
+        setVolunteer(volunteer);
+
+        verifyInvariants();
     }
 
     public Integer getId() {
