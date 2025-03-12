@@ -63,4 +63,20 @@ public class ActivitySuggestionController {
 
         return activitySuggestionService.createActivitySuggestion(userId, institutionId, activitySuggestionDto);
     }
+
+
+    @GetMapping("/{id}")
+    @PreAuthorize("(hasRole('ROLE_MEMBER') and hasPermission(#institutionId, 'INSTITUTION.MEMBER'))")
+    public List<ActivitySuggestionDto> getActivitySuggestionsToMember(@PathVariable Integer memberId) {
+        return activitySuggestionService.getActivitySuggestions();
+    }
+
+
+    // pipeline tests?
+   
+    // invariantes estranhas  -> CONTROLLER!!  -> hasPermission
+
+    // verificar memeber sotyry
+
+    // jacoco -> tirar screenshot index.html
 }
