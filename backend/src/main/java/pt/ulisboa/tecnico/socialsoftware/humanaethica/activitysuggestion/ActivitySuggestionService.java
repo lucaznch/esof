@@ -24,6 +24,7 @@ import java.util.Comparator;
 public class ActivitySuggestionService {
     @Autowired
     ActivitySuggestionRepository activitySuggestionRepository;
+
     @Autowired
     UserRepository userRepository;
     @Autowired

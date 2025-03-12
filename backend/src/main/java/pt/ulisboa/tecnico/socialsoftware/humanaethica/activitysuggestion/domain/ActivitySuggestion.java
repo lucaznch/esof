@@ -40,7 +40,6 @@ public class ActivitySuggestion {
     @ManyToOne
     private Volunteer volunteer;
 
-
     public ActivitySuggestion() {
     }
 

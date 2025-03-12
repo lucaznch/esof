@@ -66,7 +66,7 @@ public enum ErrorMessage {
     REPORT_ACTIVTIY_IS_ALREADY_REPORTED("The activity is already reported"),
     REPORT_AFTER_ACTIVTY_CLOSED("The activity period is already closed"),
     REPORT_NOT_FOUND("Report not found with id %d"),
-
+  
     // ActivitySuggestion
     ACTIVITY_SUGGESTION_NAME_INVALID("Activity Suggestion Name: %s, is not valid"),
     ACTIVITY_SUGGESTION_DESCRIPTION_INVALID("Activity Suggestion description is missing"),

@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.socialsoftware.humanaethica.user.domain;
 
 import jakarta.persistence.*;
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.activitysuggestion.domain.ActivitySuggestion;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.assessment.domain.Assessment;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.enrollment.domain.Enrollment;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.auth.domain.AuthUser;
@@ -29,6 +30,7 @@ public class Volunteer extends User {
     @OneToMany(mappedBy = "volunteer")
     private List<ActivitySuggestion> activitySuggestions = new ArrayList<>();
     
+
 
     public Volunteer() {
     }
@@ -97,11 +99,13 @@ public class Volunteer extends User {
         return reports;
     }
 
+
     public List<ActivitySuggestion> getActivitySuggestions() {
         return activitySuggestions;
     }
 
     public void addActivitySuggestion(ActivitySuggestion activitySuggestion) {
         this.activitySuggestions.add(activitySuggestion);
+
     }
 }
