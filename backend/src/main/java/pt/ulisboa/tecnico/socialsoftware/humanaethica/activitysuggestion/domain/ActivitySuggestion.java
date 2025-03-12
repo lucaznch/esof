@@ -164,6 +164,7 @@ public class ActivitySuggestion {
         applicationBeforeStartDate();
         startBeforeEnd();
         descriptionLength();
+        nameIsUniqueForVolunteer();
     }
 
     private void nameIsRequired() {
@@ -217,6 +218,12 @@ public class ActivitySuggestion {
     private void descriptionLength() {
         if (this.description.length() < 10) {
             throw new HEException(ACTIVITY_SUGGESTION_DESCRIPTION_LENGTH_INVALID);
+        }
+    }
+
+    private void nameIsUniqueForVolunteer() {       
+        if (this.volunteer.getActivitySuggestions().stream().anyMatch(s -> s.getName().equals(this.name))) {
+            throw new HEException(ACTIVITY_SUGGESTION_NAME_UNIQUE_FOR_VOLUNTEER);
         }
     }
 }
