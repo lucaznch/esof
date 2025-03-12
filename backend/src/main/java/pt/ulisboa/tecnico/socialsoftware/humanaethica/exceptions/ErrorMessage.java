@@ -68,12 +68,12 @@ public enum ErrorMessage {
     REPORT_NOT_FOUND("Report not found with id %d"),
 
     // ActivitySuggestion
-    ACTIVITY_SUGGESTION_NAME_INVALID("Suggestion Name: %s, is not valid"),
-    ACTIVITY_SUGGESTION_DESCRIPTION_INVALID("Suggestion description is missing"),
+    ACTIVITY_SUGGESTION_NAME_INVALID("Activity Suggestion Name: %s, is not valid"),
+    ACTIVITY_SUGGESTION_DESCRIPTION_INVALID("Activity Suggestion description is missing"),
     ACTIVITY_SUGGESTION_REGION_NAME_INVALID("Region Name: %s, is not valid"),
     ACTIVITY_SUGGESTION_INVALID_DATE("Date format for %s is invalid"),
-    ACTIVITY_SUGGESTION_APPLICATION_DEADLINE_AFTER_START("Suggestion Enrollment deadline is after start"),
-    ACTIVITY_SUGGESTION_START_AFTER_END("Suggestion start is after end"),
+    ACTIVITY_SUGGESTION_APPLICATION_DEADLINE_AFTER_START("Activity Suggestion Enrollment deadline is after start"),
+    ACTIVITY_SUGGESTION_START_AFTER_END("Activity Suggestion start is after end"),
     ;
 
     public final String label;
