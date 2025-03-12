@@ -22,23 +22,23 @@ public class ActivitySuggestionDto {
     public ActivitySuggestionDto() {
     }
 
-    public ActivitySuggestionDto(ActivitySuggestion suggestion, boolean deepCopyInstitution, boolean deepCopyVolunteer) {
-        setId(suggestion.getId());
-        setParticipantsNumberLimit(suggestion.getParticipantsNumberLimit());
-        setName(suggestion.getName());
-        setDescription(suggestion.getDescription());
-        setRegion(suggestion.getRegion());
-        setCreationDate(DateHandler.toISOString(suggestion.getCreationDate()));
-        setStartingDate(DateHandler.toISOString(suggestion.getStartingDate()));
-        setEndingDate(DateHandler.toISOString(suggestion.getEndingDate()));
-        setApplicationDeadline(DateHandler.toISOString(suggestion.getApplicationDeadline()));
-        setState(suggestion.getState().name());
+    public ActivitySuggestionDto(ActivitySuggestion activitySuggestion, boolean deepCopyInstitution, boolean deepCopyVolunteer) {
+        setId(activitySuggestion.getId());
+        setParticipantsNumberLimit(activitySuggestion.getParticipantsNumberLimit());
+        setName(activitySuggestion.getName());
+        setDescription(activitySuggestion.getDescription());
+        setRegion(activitySuggestion.getRegion());
+        setCreationDate(DateHandler.toISOString(activitySuggestion.getCreationDate()));
+        setStartingDate(DateHandler.toISOString(activitySuggestion.getStartingDate()));
+        setEndingDate(DateHandler.toISOString(activitySuggestion.getEndingDate()));
+        setApplicationDeadline(DateHandler.toISOString(activitySuggestion.getApplicationDeadline()));
+        setState(activitySuggestion.getState().name());
 
-        if (deepCopyInstitution && (suggestion.getInstitution() != null)) {
-            setInstitution(new InstitutionDto(suggestion.getInstitution(), false, false));
+        if (deepCopyInstitution && (activitySuggestion.getInstitution() != null)) {
+            setInstitution(new InstitutionDto(activitySuggestion.getInstitution(), false, false));
         }
-        if (deepCopyVolunteer && (suggestion.getVolunteer() != null)) {
-            setVolunteer(new UserDto(suggestion.getVolunteer()));
+        if (deepCopyVolunteer && (activitySuggestion.getVolunteer() != null)) {
+            setVolunteer(new UserDto(activitySuggestion.getVolunteer()));
         }
     }
 
