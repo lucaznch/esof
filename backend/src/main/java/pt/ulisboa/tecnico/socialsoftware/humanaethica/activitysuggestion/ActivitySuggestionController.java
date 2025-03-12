@@ -21,62 +21,33 @@ import java.util.List;
 @RestController
 @RequestMapping("/activitysuggestions")
 public class ActivitySuggestionController {
-
     @Autowired
     private ActivitySuggestionService activitySuggestionService;
 
     private static final Logger logger = LoggerFactory.getLogger(ActivitySuggestionController.class);
     
 
-    @GetMapping()
-    public List<ActivitySuggestionDto> getActivitySuggestions(Principal principal) {
-        return activitySuggestionService.getActivitySuggestions();
-    }
+    /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    /*      access conditions                                                                              */
+    /*    - only a volunteer can suggest an activity                                                       */
+    /*    - only a member of an institution can get the list of suggested activities for that institution  */
+    /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-    // why not @Valid ???
-    @GetMapping("/{id}")
+
+    @GetMapping("/{institutionId}")
+    @PreAuthorize("(hasRole('ROLE_MEMBER') and hasPermission(#institutionId, 'INSTITUTION.MEMBER'))")
     public List<ActivitySuggestionDto> getActivitySuggestions(@PathVariable Integer institutionId) {
         return activitySuggestionService.getActivitySuggestionsByInstitution(institutionId);
     }
 
-
-/*
-
-    para logica segunda story!
-
-    @PutMapping("/{activityId}")
-    @PreAuthorize("hasRole('ROLE_MEMBER') and hasPermission(#activityId, 'ACTIVITY.MEMBER')")
-    public ActivityDto updateActivity(@PathVariable int activityId, @Valid @RequestBody ActivityDto activityDto){
-        return activityService.updateActivity(activityId, activityDto);
-    }
-
-*/
-
-
-    @PostMapping()
+    @PostMapping("/{institutionId}")
     @PreAuthorize("(hasRole('ROLE_VOLUNTEER'))")
-    public ActivitySuggestionDto createActivitySuggestion(Principal principal, @Valid @RequestBody ActivitySuggestionDto activitySuggestionDto){
-        
+    public ActivitySuggestionDto createActivitySuggestion(Principal principal, @PathVariable Integer institutionId, @Valid @RequestBody ActivitySuggestionDto activitySuggestionDto) {
         int userId = ((AuthUser) ((Authentication) principal).getPrincipal()).getUser().getId();
-
-        int institutionId = activitySuggestionDto.getInstitution().getId();
-
+        
+        // since the institutionId is already in the path, don't need 
+        // int institutionId = activitySuggestionDto.getInstitution().getId();
+        
         return activitySuggestionService.createActivitySuggestion(userId, institutionId, activitySuggestionDto);
     }
-
-
-    @GetMapping("/{id}")
-    @PreAuthorize("(hasRole('ROLE_MEMBER') and hasPermission(#institutionId, 'INSTITUTION.MEMBER'))")
-    public List<ActivitySuggestionDto> getActivitySuggestionsToMember(@PathVariable Integer memberId) {
-        return activitySuggestionService.getActivitySuggestions();
-    }
-
-
-    // pipeline tests?
-   
-    // invariantes estranhas  -> CONTROLLER!!  -> hasPermission
-
-    // verificar memeber sotyry
-
-    // jacoco -> tirar screenshot index.html
 }

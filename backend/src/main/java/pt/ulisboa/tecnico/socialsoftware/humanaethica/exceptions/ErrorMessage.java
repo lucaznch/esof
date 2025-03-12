@@ -66,17 +66,17 @@ public enum ErrorMessage {
     REPORT_ACTIVTIY_IS_ALREADY_REPORTED("The activity is already reported"),
     REPORT_AFTER_ACTIVTY_CLOSED("The activity period is already closed"),
     REPORT_NOT_FOUND("Report not found with id %d"),
-
-    // Suggestion
-    SUGGESTION_NAME_INVALID("Suggestion Name: %s, is not valid"),
-    SUGGESTION_DESCRIPTION_INVALID("Suggestion description is missing"),
-    SUGGESTION_REGION_NAME_INVALID("Region Name: %s, is not valid"),
-    SUGGESTION_INVALID_DATE("Date format for %s is invalid"),
-    SUGGESTION_APPLICATION_DEADLINE_AFTER_START("Suggestion Enrollment deadline is after start"),
-    SUGGESTION_START_AFTER_END("Suggestion start is after end"),
-    SUGGESTION_DESCRIPTION_LENGTH_INVALID("Suggestion description must have at least 10 characters"),
-    SUGGESTION_NAME_UNIQUE_FOR_VOLUNTEER("Suggestion name must be unique for volunteer"),
-    SUGGESTION_APPLICATION_DEADLINE_AFTER_CREATION("Suggestion application deadline must be at least 7 days after the creation date"),
+  
+    // ActivitySuggestion
+    ACTIVITY_SUGGESTION_NAME_INVALID("Activity Suggestion Name: %s, is not valid"),
+    ACTIVITY_SUGGESTION_DESCRIPTION_INVALID("Activity Suggestion description is missing"),
+    ACTIVITY_SUGGESTION_REGION_NAME_INVALID("Region Name: %s, is not valid"),
+    ACTIVITY_SUGGESTION_INVALID_DATE("Date format for %s is invalid"),
+    ACTIVITY_SUGGESTION_APPLICATION_DEADLINE_AFTER_START("Activity Suggestion Enrollment deadline is after start"),
+    ACTIVITY_SUGGESTION_START_AFTER_END("Activity Suggestion start is after end"),
+    ACTIVITY_SUGGESTION_DESCRIPTION_LENGTH_INVALID("Activity Suggestion description must have at least 10 characters"),
+    ACTIVITY_SUGGESTION_NAME_UNIQUE_FOR_VOLUNTEER("Activity Suggestion name must be unique for volunteer"),
+    ACTIVITY_SUGGESTION_APPLICATION_DEADLINE_AFTER_CREATION("Activity Suggestion application deadline must be at least 7 days after the creation date"),
     ;
 
     public final String label;

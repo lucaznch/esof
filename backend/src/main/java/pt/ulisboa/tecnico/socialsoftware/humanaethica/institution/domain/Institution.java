@@ -199,11 +199,7 @@ public class Institution {
         return activitySuggestions;
     }
 
-    public void addActivitySuggestion(ActivitySuggestion suggestion) {
-        this.activitySuggestions.add(suggestion);
-    }
-
-    public void removeActivitySuggestion(ActivitySuggestion suggestion) {   // needed?
-        this.activitySuggestions.remove(suggestion);
+    public void addActivitySuggestion(ActivitySuggestion activitySuggestion) {
+        this.activitySuggestions.add(activitySuggestion);
     }
 }

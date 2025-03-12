@@ -13,8 +13,9 @@ import java.time.LocalDateTime;
 
 
 @Entity
-@Table(name = "suggestion")
+@Table(name = "activity_suggestion")
 public class ActivitySuggestion {
+
     public enum State {APPROVED, REJECTED, IN_REVIEW}
 
     @Id
@@ -42,16 +43,15 @@ public class ActivitySuggestion {
     public ActivitySuggestion() {
     }
 
-    public ActivitySuggestion(ActivitySuggestionDto suggestionDto, Institution institution, Volunteer volunteer) {
-        setParticipantsNumberLimit(suggestionDto.getParticipantsNumberLimit());
-        setName(suggestionDto.getName());
-        setDescription(suggestionDto.getDescription());
-        setRegion(suggestionDto.getRegion());
+    public ActivitySuggestion(Institution institution, Volunteer volunteer, ActivitySuggestionDto activitySuggestionDto) {
+        setParticipantsNumberLimit(activitySuggestionDto.getParticipantsNumberLimit());
+        setName(activitySuggestionDto.getName());
+        setDescription(activitySuggestionDto.getDescription());
+        setRegion(activitySuggestionDto.getRegion());
         setCreationDate(DateHandler.now());
-        setStartingDate(DateHandler.toLocalDateTime(suggestionDto.getStartingDate()));
-        setEndingDate(DateHandler.toLocalDateTime(suggestionDto.getEndingDate()));
-        setApplicationDeadline(DateHandler.toLocalDateTime(suggestionDto.getApplicationDeadline()));
-        setState(ActivitySuggestion.State.valueOf(suggestionDto.getState()));
+        setStartingDate(DateHandler.toLocalDateTime(activitySuggestionDto.getStartingDate()));
+        setEndingDate(DateHandler.toLocalDateTime(activitySuggestionDto.getEndingDate()));
+        setApplicationDeadline(DateHandler.toLocalDateTime(activitySuggestionDto.getApplicationDeadline()));
         setInstitution(institution);
         setVolunteer(volunteer);
 
@@ -168,69 +168,68 @@ public class ActivitySuggestion {
 
     private void nameIsRequired() {
         if (this.name == null || this.name.trim().isEmpty()) {
-            throw new HEException(SUGGESTION_NAME_INVALID, this.name);
+            throw new HEException(ACTIVITY_SUGGESTION_NAME_INVALID, this.name);
         }
     }
 
     private void regionIsRequired() {
         if (this.region == null || this.region.trim().isEmpty()) {
-            throw new HEException(SUGGESTION_REGION_NAME_INVALID, this.region);
+            throw new HEException(ACTIVITY_SUGGESTION_REGION_NAME_INVALID, this.region);
         }
     }
 
     private void descriptionIsRequired() {
         if (this.description == null || this.description.trim().isEmpty()) {
-            throw new HEException(SUGGESTION_DESCRIPTION_INVALID, this.description);
+            throw new HEException(ACTIVITY_SUGGESTION_DESCRIPTION_INVALID, this.description);
         }
     }
 
     private void applicationDeadlineIsRequired() {
         if (this.applicationDeadline == null) {
-            throw new HEException(SUGGESTION_INVALID_DATE, "Enrollment deadline");
+            throw new HEException(ACTIVITY_SUGGESTION_INVALID_DATE, "Enrollment deadline");
         }
     }
 
     private void startingDateIsRequired() {
         if (this.startingDate == null) {
-            throw new HEException(SUGGESTION_INVALID_DATE, "Starting date");
+            throw new HEException(ACTIVITY_SUGGESTION_INVALID_DATE, "Starting date");
         }
     }
 
     private void endingDateIsRequired() {
         if (this.endingDate == null) {
-            throw new HEException(SUGGESTION_INVALID_DATE, "Ending date");
+            throw new HEException(ACTIVITY_SUGGESTION_INVALID_DATE, "Ending date");
         }
     }
 
     private void applicationBeforeStartDate() {
         if (!this.applicationDeadline.isBefore(this.startingDate)) {
-            throw new HEException(SUGGESTION_APPLICATION_DEADLINE_AFTER_START);
+            throw new HEException(ACTIVITY_SUGGESTION_APPLICATION_DEADLINE_AFTER_START);
         }
     }
 
     private void startBeforeEnd() {
         if (!this.startingDate.isBefore(this.endingDate)) {
-            throw new HEException(SUGGESTION_START_AFTER_END);
+            throw new HEException(ACTIVITY_SUGGESTION_START_AFTER_END);
         }
     }
 
     private void descriptionLength() {
         if (this.description.length() < 10) {
-            throw new HEException(SUGGESTION_DESCRIPTION_LENGTH_INVALID);
+            throw new HEException(ACTIVITY_SUGGESTION_DESCRIPTION_LENGTH_INVALID);
         }
     }
 
     private void nameIsUniqueForVolunteer() {       
         if (this.volunteer.getActivitySuggestions().stream().anyMatch(s -> s.getName().equals(this.name))) {
-            throw new HEException(SUGGESTION_NAME_UNIQUE_FOR_VOLUNTEER, this.name);
+            throw new HEException(ACTIVITY_SUGGESTION_NAME_UNIQUE_FOR_VOLUNTEER);
         }
     }
 
     private void applicationDeadlineAfterCreation() {
-        if (this.creationDate != null && this.applicationDeadline != null) {
-            if (!this.applicationDeadline.isAfter(this.creationDate.plusDays(7))) {
-                throw new HEException(SUGGESTION_APPLICATION_DEADLINE_AFTER_CREATION);
-            }
+        if (this.creationDate != null && this.applicationDeadline != null && !this.applicationDeadline.isAfter(this.creationDate.plusDays(7))) {
+            throw new HEException(ACTIVITY_SUGGESTION_APPLICATION_DEADLINE_AFTER_CREATION);
         }
     }
 }
+
