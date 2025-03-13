@@ -43,6 +43,10 @@ import pt.ulisboa.tecnico.socialsoftware.humanaethica.theme.repository.ThemeRepo
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.theme.ThemeService
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.utils.DateHandler
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.utils.Mailer
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.activitysuggestion.dto.ActivitySuggestionDto
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.activitysuggestion.repository.ActivitySuggestionRepository
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.activitysuggestion.ActivitySuggestionService
+
 import spock.lang.Specification
 
 import java.time.LocalDateTime
@@ -253,17 +257,25 @@ class SpockTest extends Specification {
         activityDto
     }
 
+    // activity suggestion
 
-    //activitySuggestion
+    @Autowired
+    ActivitySuggestionRepository activitySuggestionRepository
 
-    public static final String SUGGESTION_NAME_1 = "suggestion name 1"
-    public static final String SUGGESTION_NAME_2 = "suggestion name 2"
-    public static final String SUGGESTION_NAME_3 = "suggestion name 3"
-    public static final String SUGGESTION_REGION_1 = "suggestion region 1"
-    public static final String SUGGESTION_REGION_2 = "suggestion region 2"
-    public static final String SUGGESTION_DESCRIPTION_1 = "suggestion description 1"
-    public static final String SUGGESTION_DESCRIPTION_2 = "suggestion description 2"
-    public static final String SUGGESTION_DESCRIPTION_WRONG = "wrong"
+    @Autowired
+    ActivitySuggestionService activitySuggestionService
+
+    def createActivitySuggestionDto(name, region, number, description, deadline, start, end) {
+        def activitySuggestionDto = new ActivitySuggestionDto()
+        activitySuggestionDto.setName(name)
+        activitySuggestionDto.setRegion(region)
+        activitySuggestionDto.setParticipantsNumberLimit(number)
+        activitySuggestionDto.setDescription(description)
+        activitySuggestionDto.setStartingDate(DateHandler.toISOString(start))
+        activitySuggestionDto.setEndingDate(DateHandler.toISOString(end))
+        activitySuggestionDto.setApplicationDeadline(DateHandler.toISOString(deadline))
+        activitySuggestionDto
+    }
 
 
     // enrollment
