@@ -5,30 +5,29 @@ import org.springframework.boot.test.context.TestConfiguration
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.BeanConfiguration
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.SpockTest
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.activitysuggestion.domain.ActivitySuggestion
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.auth.domain.AuthUser
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.domain.User
 
 
 @DataJpaTest
 class GetActivitySuggestionsByInstitutionServiceTest extends SpockTest {
+    def institution
+
     def setup() {
-        def institution = institutionService.getDemoInstitution()
+        institution = institutionService.getDemoInstitution()
         def volunteer = userService.getDemoVolunteer()
 
         given: "activity suggestion info"
-        def activitySuggestionDto = createActivitySuggestionDto(ACTIVITY_NAME_1,ACTIVITY_REGION_1,1,ACTIVITY_DESCRIPTION_1,
-                IN_EIGHT_DAYS,IN_NINE_DAYS,IN_TWELVE_DAYS)
+        def activitySuggestionDto = createActivitySuggestionDto(ACTIVITY_NAME_1,ACTIVITY_REGION_1,1,ACTIVITY_DESCRIPTION_1,IN_EIGHT_DAYS,IN_NINE_DAYS,IN_TWELVE_DAYS)
 
         and: "an activity suggestion"
-        System.out.println("a")
         def activitySuggestion = new ActivitySuggestion(institution, volunteer, activitySuggestionDto)
         activitySuggestionRepository.save(activitySuggestion)
-        System.out.println("b")
 
         and: 'another activity suggestion'
-        System.out.println("c")
         activitySuggestionDto.name = ACTIVITY_NAME_2
         activitySuggestion = new ActivitySuggestion(institution, volunteer, activitySuggestionDto)
         activitySuggestionRepository.save(activitySuggestion)
-        System.out.println("d")
     }
 
     def 'get two activity suggestions'() {
