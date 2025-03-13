@@ -206,4 +206,10 @@ public class UserService {
         return new InstitutionDto(member.getInstitution(), true, true);
     }
 
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public Volunteer getDemoVolunteer() {
+        Volunteer volunteer = new Volunteer("demo_volunteer", "demo_volunteer_123456789", "demo_volunteer123456789@mail.com", AuthUser.Type.DEMO, State.ACTIVE);
+        userRepository.save(volunteer);
+        return volunteer;
+    }
 }
