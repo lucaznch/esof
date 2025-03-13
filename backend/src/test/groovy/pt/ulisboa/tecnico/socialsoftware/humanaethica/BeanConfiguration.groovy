@@ -84,12 +84,6 @@ class BeanConfiguration {
     }
 
     @Bean
-    ActivitySuggestionsService activitySuggestionsService() {
-        return new ActivitySuggestionsService()
-    }
-
-
-    @Bean
     EnrollmentService enrollmentService() {
         return new EnrollmentService()
     }
