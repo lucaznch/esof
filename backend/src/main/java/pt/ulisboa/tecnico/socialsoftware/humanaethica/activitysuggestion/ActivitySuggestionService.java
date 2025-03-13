@@ -41,8 +41,8 @@ public class ActivitySuggestionService {
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public List<ActivitySuggestionDto> getActivitySuggestionsByInstitution(Integer institutionId) {
-        if (institutionId == null || !institutionRepository.existsById(institutionId)) throw new HEException(INSTITUTION_NOT_FOUND, institutionId);
-        
+        if (institutionId == null || institutionId < 1 || !institutionRepository.existsById(institutionId)) throw new HEException(INSTITUTION_NOT_FOUND);
+
         return activitySuggestionRepository.getActivitySuggestionsByInstitution(institutionId).stream()
                 .map(s -> new ActivitySuggestionDto(s, true, true))
                 .sorted(Comparator.comparing(ActivitySuggestionDto::getName, String.CASE_INSENSITIVE_ORDER))
