@@ -78,6 +78,29 @@ class CreateActivitySuggestionMethodTest extends SpockTest {
         description << ["a", "ab", "abc", "abcd", "abcde", "abcdef", "abcdefg", "abcdefgh", "abcdefghi"]
     }
 
+    @Unroll
+    def "create activity suggestion and violate unique suggestion name for volunteer invariant"() {
+        given:
+        otherActivitySuggestion.getName() >> ACTIVITY_NAME_1
+        volunteer.getActivitySuggestions() >> [otherActivitySuggestion]
+        and: "an activity suggestion dto"
+        activitySuggestionDto = new ActivitySuggestionDto()
+        activitySuggestionDto.setParticipantsNumberLimit(2)
+        activitySuggestionDto.setName(ACTIVITY_NAME_1)
+        activitySuggestionDto.setDescription(ACTIVITY_DESCRIPTION_1)
+        activitySuggestionDto.setRegion(ACTIVITY_REGION_1)
+        activitySuggestionDto.setStartingDate(DateHandler.toISOString(IN_NINE_DAYS))
+        activitySuggestionDto.setEndingDate(DateHandler.toISOString(IN_TWELVE_DAYS))
+        activitySuggestionDto.setApplicationDeadline(DateHandler.toISOString(IN_EIGHT_DAYS))
+
+        when:
+        new ActivitySuggestion(institution, volunteer, activitySuggestionDto)
+
+        then:
+        def error = thrown(HEException)
+        error.getErrorMessage() == ErrorMessage.ACTIVITY_SUGGESTION_NAME_UNIQUE_FOR_VOLUNTEER
+    }
+
     @TestConfiguration
     static class LocalBeanConfiguration extends BeanConfiguration {}
 }
