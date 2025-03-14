@@ -7,7 +7,10 @@ import pt.ulisboa.tecnico.socialsoftware.humanaethica.SpockTest
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.activitysuggestion.domain.ActivitySuggestion
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.auth.domain.AuthUser
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.domain.User
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.HEException
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.ErrorMessage
 
+import spock.lang.Unroll
 
 @DataJpaTest
 class GetActivitySuggestionsByInstitutionServiceTest extends SpockTest {
@@ -38,6 +41,19 @@ class GetActivitySuggestionsByInstitutionServiceTest extends SpockTest {
         result.size() == 2
         result.get(0).name == ACTIVITY_NAME_1
         result.get(1).name == ACTIVITY_NAME_2
+    }
+
+    @Unroll
+    def 'get activity suggestions when institutionId is not valid'() {
+        when:
+        activitySuggestionService.getActivitySuggestionsByInstitution(institutionId)
+
+        then:
+        def error = thrown(HEException)
+        error.getErrorMessage() == ErrorMessage.INSTITUTION_NOT_FOUND
+
+        where:
+        institutionId << [null,-1]
     }
 
     @TestConfiguration
