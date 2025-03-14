@@ -25,7 +25,7 @@ public class ActivitySuggestionController {
     private ActivitySuggestionService activitySuggestionService;
 
     private static final Logger logger = LoggerFactory.getLogger(ActivitySuggestionController.class);
-    
+
 
     /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     /*      access conditions                                                                              */
@@ -35,7 +35,7 @@ public class ActivitySuggestionController {
 
 
     @GetMapping("/{institutionId}")
-    @PreAuthorize("(hasRole('ROLE_MEMBER') and hasPermission(#institutionId, 'INSTITUTION.MEMBER'))")
+    @PreAuthorize("(hasRole('ROLE_MEMBER'))")
     public List<ActivitySuggestionDto> getActivitySuggestions(@PathVariable Integer institutionId) {
         return activitySuggestionService.getActivitySuggestionsByInstitution(institutionId);
     }
@@ -45,9 +45,7 @@ public class ActivitySuggestionController {
     public ActivitySuggestionDto createActivitySuggestion(Principal principal, @PathVariable Integer institutionId, @Valid @RequestBody ActivitySuggestionDto activitySuggestionDto) {
         int userId = ((AuthUser) ((Authentication) principal).getPrincipal()).getUser().getId();
         
-        // since the institutionId is already in the path, don't need 
-        // int institutionId = activitySuggestionDto.getInstitution().getId();
-        
         return activitySuggestionService.createActivitySuggestion(userId, institutionId, activitySuggestionDto);
     }
 }
+
