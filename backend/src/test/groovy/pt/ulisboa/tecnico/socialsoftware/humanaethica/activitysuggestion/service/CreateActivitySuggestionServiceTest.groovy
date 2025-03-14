@@ -43,6 +43,19 @@ class CreateActivitySuggestionServiceTest extends SpockTest {
         result.institution.id == institution.id
         result.volunteer.id == volunteer.id
         result.getState() == ActivitySuggestion.State.IN_REVIEW.name()
+        and: "the activity suggestion is saved in the database"
+        activitySuggestionRepository.findAll().size() == 1
+        and: "the stored data is correct"
+        def storedActivitySuggestion = activitySuggestionRepository.findById(result.id).get()
+        storedActivitySuggestion.name == ACTIVITY_NAME_1
+        storedActivitySuggestion.region == ACTIVITY_REGION_1
+        storedActivitySuggestion.participantsNumberLimit == 1
+        storedActivitySuggestion.description == ACTIVITY_DESCRIPTION_1
+        storedActivitySuggestion.startingDate == IN_NINE_DAYS
+        storedActivitySuggestion.endingDate == IN_TWELVE_DAYS
+        storedActivitySuggestion.applicationDeadline == IN_EIGHT_DAYS
+        storedActivitySuggestion.institution.id == institution.id
+        storedActivitySuggestion.volunteer.id == volunteer.id
     }
 
     @Unroll
@@ -68,7 +81,7 @@ class CreateActivitySuggestionServiceTest extends SpockTest {
     def getVolunteerId(volunteerId) {
         if (volunteerId == EXIST)
             return volunteer.getId()
-        else
+        else if (volunteerId == NO_EXIST)
             return 222
         return null
     }
@@ -76,7 +89,7 @@ class CreateActivitySuggestionServiceTest extends SpockTest {
     def getInstitutionId(institutionId) {
         if (institutionId == EXIST)
             return institution.getId()
-        else
+        else if (institutionId == NO_EXIST)
             return 222
         return null
     }

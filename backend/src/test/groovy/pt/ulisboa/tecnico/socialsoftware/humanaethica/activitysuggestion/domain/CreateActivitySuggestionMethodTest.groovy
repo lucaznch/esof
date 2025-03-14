@@ -130,6 +130,104 @@ class CreateActivitySuggestionMethodTest extends SpockTest {
         deadline << [IN_ONE_DAY, IN_TWO_DAYS, IN_THREE_DAYS, IN_FOUR_DAYS, IN_FIVE_DAYS, IN_SIX_DAYS]
     }
 
+    @Unroll
+    def "create activity suggestion and violate name, region, description are required invariant"() {
+        given:
+        otherActivitySuggestion.getName() >> ACTIVITY_NAME_2
+        institution.getActivitySuggestions() >> [otherActivitySuggestion]
+        and: "an activity suggestion dto"
+        activitySuggestionDto = new ActivitySuggestionDto()
+        activitySuggestionDto.setParticipantsNumberLimit(2)
+        activitySuggestionDto.setName(name)
+        activitySuggestionDto.setDescription(description)
+        activitySuggestionDto.setRegion(region)
+        activitySuggestionDto.setStartingDate(DateHandler.toISOString(IN_NINE_DAYS))
+        activitySuggestionDto.setEndingDate(DateHandler.toISOString(IN_TWELVE_DAYS))
+        activitySuggestionDto.setApplicationDeadline(DateHandler.toISOString(IN_EIGHT_DAYS))
+
+        when:
+        new ActivitySuggestion(institution, volunteer, activitySuggestionDto)
+
+        then:
+        def error = thrown(HEException)
+        error.getErrorMessage() == errorMessage
+
+        where:
+        name            | description               | region            || errorMessage
+        null            | ACTIVITY_DESCRIPTION_1    | ACTIVITY_REGION_1 || ErrorMessage.ACTIVITY_SUGGESTION_NAME_INVALID
+        " "             | ACTIVITY_DESCRIPTION_1    | ACTIVITY_REGION_1 || ErrorMessage.ACTIVITY_SUGGESTION_NAME_INVALID
+        ACTIVITY_NAME_1 | null                      | ACTIVITY_REGION_1 || ErrorMessage.ACTIVITY_SUGGESTION_DESCRIPTION_INVALID
+        ACTIVITY_NAME_1 | " "                       | ACTIVITY_REGION_1 || ErrorMessage.ACTIVITY_SUGGESTION_DESCRIPTION_INVALID
+        ACTIVITY_NAME_1 | ACTIVITY_DESCRIPTION_1    | null              || ErrorMessage.ACTIVITY_SUGGESTION_REGION_NAME_INVALID
+        ACTIVITY_NAME_1 | ACTIVITY_DESCRIPTION_1    | " "               || ErrorMessage.ACTIVITY_SUGGESTION_REGION_NAME_INVALID
+    }
+
+    @Unroll
+    def "create activity suggestion and violate dates are required invariant"() {
+        given:
+        otherActivitySuggestion.getName() >> ACTIVITY_NAME_2
+        institution.getActivitySuggestions() >> [otherActivitySuggestion]
+        and: "an activity suggestion dto"
+        activitySuggestionDto = new ActivitySuggestionDto()
+        activitySuggestionDto.setParticipantsNumberLimit(2)
+        activitySuggestionDto.setName(ACTIVITY_NAME_1)
+        activitySuggestionDto.setDescription(ACTIVITY_DESCRIPTION_1)
+        activitySuggestionDto.setRegion(ACTIVITY_REGION_1)
+        activitySuggestionDto.setStartingDate(start instanceof LocalDateTime ? DateHandler.toISOString(start) : start as String)
+        activitySuggestionDto.setEndingDate(end instanceof LocalDateTime ? DateHandler.toISOString(end) : end as String)
+        activitySuggestionDto.setApplicationDeadline(deadline instanceof LocalDateTime ? DateHandler.toISOString(deadline) : deadline as String)
+
+        when:
+        new ActivitySuggestion(institution, volunteer, activitySuggestionDto)
+
+        then:
+        def error = thrown(HEException)
+        error.getErrorMessage() == errorMessage
+
+        where:
+        start                   | end               | deadline          || errorMessage
+        null                    | IN_TWELVE_DAYS    | IN_EIGHT_DAYS     || ErrorMessage.ACTIVITY_SUGGESTION_INVALID_DATE
+        IN_NINE_DAYS            | null              | IN_EIGHT_DAYS     || ErrorMessage.ACTIVITY_SUGGESTION_INVALID_DATE
+        IN_NINE_DAYS            | IN_TWELVE_DAYS    | null              || ErrorMessage.ACTIVITY_SUGGESTION_INVALID_DATE
+    }
+
+    @Unroll
+    def "create activity suggestion and violate date precedence invariants"() {
+        // application deadline must be before the starting date
+        // starting date must be before the ending date
+        given:
+        otherActivitySuggestion.getName() >> ACTIVITY_NAME_2
+        institution.getActivitySuggestions() >> [otherActivitySuggestion]
+        and: "an activity suggestion dto"
+        activitySuggestionDto = new ActivitySuggestionDto()
+        activitySuggestionDto.setParticipantsNumberLimit(2)
+        activitySuggestionDto.setName(ACTIVITY_NAME_1)
+        activitySuggestionDto.setDescription(ACTIVITY_DESCRIPTION_1)
+        activitySuggestionDto.setRegion(ACTIVITY_REGION_1)
+        activitySuggestionDto.setStartingDate(start instanceof LocalDateTime ? DateHandler.toISOString(start) : start as String)
+        activitySuggestionDto.setEndingDate(end instanceof LocalDateTime ? DateHandler.toISOString(end) : end as String)
+        activitySuggestionDto.setApplicationDeadline(deadline instanceof LocalDateTime ? DateHandler.toISOString(deadline) : deadline as String)
+
+        when:
+        new ActivitySuggestion(institution, volunteer, activitySuggestionDto)
+
+        then:
+        def error = thrown(HEException)
+        error.getErrorMessage() == errorMessage
+
+        // start: 9 days from now
+        // end: 12 days from now
+        // deadline: 8 days from now
+
+        where:
+        start                   | end               | deadline          || errorMessage
+        IN_THREE_DAYS           | IN_NINE_DAYS      | IN_FOUR_DAYS      || ErrorMessage.ACTIVITY_SUGGESTION_APPLICATION_DEADLINE_AFTER_START
+        IN_THREE_DAYS           | IN_NINE_DAYS      | IN_FIVE_DAYS      || ErrorMessage.ACTIVITY_SUGGESTION_APPLICATION_DEADLINE_AFTER_START
+        IN_EIGHT_DAYS           | IN_FIVE_DAYS      | IN_THREE_DAYS     || ErrorMessage.ACTIVITY_SUGGESTION_START_AFTER_END
+        IN_NINE_DAYS           | IN_FIVE_DAYS      | IN_THREE_DAYS      || ErrorMessage.ACTIVITY_SUGGESTION_START_AFTER_END
+    }
+
+
     @TestConfiguration
     static class LocalBeanConfiguration extends BeanConfiguration {}
 }
