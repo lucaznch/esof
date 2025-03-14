@@ -68,6 +68,16 @@ class GetActivitySuggestionsWebServiceIT extends SpockTest {
         DateHandler.toLocalDateTime(response.get(0).startingDate).withNano(0) == IN_NINE_DAYS.withNano(0)
         DateHandler.toLocalDateTime(response.get(0).endingDate).withNano(0) == IN_TWELVE_DAYS.withNano(0)
         DateHandler.toLocalDateTime(response.get(0).applicationDeadline).withNano(0) == IN_EIGHT_DAYS.withNano(0)
+        and: "check database"
+        activitySuggestionRepository.count() == 2
+        def activitySuggestion = activitySuggestionRepository.findAll().get(0)
+        activitySuggestion.getName() == ACTIVITY_NAME_1
+        activitySuggestion.getRegion() == ACTIVITY_REGION_1
+        activitySuggestion.getParticipantsNumberLimit() == 1
+        activitySuggestion.getDescription() == ACTIVITY_DESCRIPTION_1
+        activitySuggestion.getStartingDate().withNano(0) == IN_NINE_DAYS.withNano(0)
+        activitySuggestion.getEndingDate().withNano(0) == IN_TWELVE_DAYS.withNano(0)
+        activitySuggestion.getApplicationDeadline().withNano(0) == IN_EIGHT_DAYS.withNano(0)
 
         cleanup:
         deleteAll()
