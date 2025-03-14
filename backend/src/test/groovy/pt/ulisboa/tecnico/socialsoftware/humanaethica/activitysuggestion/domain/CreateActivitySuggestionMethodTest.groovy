@@ -12,6 +12,8 @@ import pt.ulisboa.tecnico.socialsoftware.humanaethica.utils.DateHandler
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.ErrorMessage
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.HEException
 
+import java.time.LocalDateTime
+
 import spock.lang.Unroll
 
 @DataJpaTest
@@ -99,6 +101,33 @@ class CreateActivitySuggestionMethodTest extends SpockTest {
         then:
         def error = thrown(HEException)
         error.getErrorMessage() == ErrorMessage.ACTIVITY_SUGGESTION_NAME_UNIQUE_FOR_VOLUNTEER
+    }
+
+    @Unroll
+    def "create activity suggestion and violate application deadline after creation date invariant"() {
+        // Activity Suggestion application deadline must be at least 7 days after the creation date
+        given:
+        otherActivitySuggestion.getName() >> ACTIVITY_NAME_2
+        institution.getActivitySuggestions() >> [otherActivitySuggestion]
+        and: "an activity suggestion dto"
+        activitySuggestionDto = new ActivitySuggestionDto()
+        activitySuggestionDto.setParticipantsNumberLimit(2)
+        activitySuggestionDto.setName(ACTIVITY_NAME_1)
+        activitySuggestionDto.setDescription(ACTIVITY_DESCRIPTION_1)
+        activitySuggestionDto.setRegion(ACTIVITY_REGION_1)
+        activitySuggestionDto.setStartingDate(DateHandler.toISOString(IN_NINE_DAYS))
+        activitySuggestionDto.setEndingDate(DateHandler.toISOString(IN_TWELVE_DAYS))
+        activitySuggestionDto.setApplicationDeadline(deadline instanceof LocalDateTime ? DateHandler.toISOString(deadline) : deadline as String)
+
+        when:
+        new ActivitySuggestion(institution, volunteer, activitySuggestionDto)
+
+        then:
+        def error = thrown(HEException)
+        error.getErrorMessage() == ErrorMessage.ACTIVITY_SUGGESTION_APPLICATION_DEADLINE_AFTER_CREATION
+
+        where:
+        deadline << [IN_ONE_DAY, IN_TWO_DAYS, IN_THREE_DAYS, IN_FOUR_DAYS, IN_FIVE_DAYS, IN_SIX_DAYS]
     }
 
     @TestConfiguration

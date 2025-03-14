@@ -70,6 +70,9 @@ class SpockTest extends Specification {
     public static final LocalDateTime IN_ONE_DAY = DateHandler.now().plusDays(1)
     public static final LocalDateTime IN_TWO_DAYS = DateHandler.now().plusDays(2)
     public static final LocalDateTime IN_THREE_DAYS = DateHandler.now().plusDays(3)
+    public static final LocalDateTime IN_FOUR_DAYS = DateHandler.now().plusDays(4)
+    public static final LocalDateTime IN_FIVE_DAYS = DateHandler.now().plusDays(5)
+    public static final LocalDateTime IN_SIX_DAYS = DateHandler.now().plusDays(6)
     public static final LocalDateTime IN_EIGHT_DAYS = DateHandler.now().plusDays(8)
     public static final LocalDateTime IN_NINE_DAYS = DateHandler.now().plusDays(9)
     public static final LocalDateTime IN_TWELVE_DAYS = DateHandler.now().plusDays(12)
@@ -341,4 +344,3 @@ class SpockTest extends Specification {
 
 
 }
-
