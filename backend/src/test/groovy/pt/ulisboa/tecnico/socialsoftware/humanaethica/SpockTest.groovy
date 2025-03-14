@@ -5,6 +5,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.crypto.password.PasswordEncoder
+
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.activity.dto.ActivityDto
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.assessment.AssessmentRepository
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.assessment.AssessmentService
@@ -43,6 +44,10 @@ import pt.ulisboa.tecnico.socialsoftware.humanaethica.theme.repository.ThemeRepo
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.theme.ThemeService
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.utils.DateHandler
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.utils.Mailer
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.activitysuggestion.dto.ActivitySuggestionDto
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.activitysuggestion.repository.ActivitySuggestionRepository
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.activitysuggestion.ActivitySuggestionService
+
 import spock.lang.Specification
 
 import java.time.LocalDateTime
@@ -253,6 +258,25 @@ class SpockTest extends Specification {
         activityDto
     }
 
+    // activity suggestion
+
+    @Autowired
+    ActivitySuggestionRepository activitySuggestionRepository
+
+    @Autowired
+    ActivitySuggestionService activitySuggestionService
+
+    def createActivitySuggestionDto(name, region, number, description, deadline, start, end) {
+        def activitySuggestionDto = new ActivitySuggestionDto()
+        activitySuggestionDto.setName(name)
+        activitySuggestionDto.setRegion(region)
+        activitySuggestionDto.setParticipantsNumberLimit(number)
+        activitySuggestionDto.setDescription(description)
+        activitySuggestionDto.setStartingDate(DateHandler.toISOString(start))
+        activitySuggestionDto.setEndingDate(DateHandler.toISOString(end))
+        activitySuggestionDto.setApplicationDeadline(DateHandler.toISOString(deadline))
+        activitySuggestionDto
+    }
 
     // enrollment
 
@@ -335,12 +359,11 @@ class SpockTest extends Specification {
         reportRepository.deleteAll()
         activityRepository.deleteAllActivityTheme()
         activityRepository.deleteAll()
+        activitySuggestionRepository.deleteAll()
         authUserRepository.deleteAll()
         userRepository.deleteAll()
         institutionRepository.deleteAll()
         themeRepository.deleteAll()
-
     }
-
-
 }
+
