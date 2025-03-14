@@ -12,6 +12,7 @@ import pt.ulisboa.tecnico.socialsoftware.humanaethica.utils.DateHandler
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.ErrorMessage
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.HEException
 
+import spock.lang.Unroll
 
 @DataJpaTest
 class CreateActivitySuggestionMethodTest extends SpockTest {
@@ -49,6 +50,32 @@ class CreateActivitySuggestionMethodTest extends SpockTest {
         and: "invocations"
         1 * institution.addActivitySuggestion(_)
         1 * volunteer.addActivitySuggestion(_)
+    }
+
+    @Unroll
+    def "create activity and violate description length invariant"() {
+        given:
+        otherActivitySuggestion.getName() >> ACTIVITY_NAME_2
+        institution.getActivitySuggestions() >> [otherActivitySuggestion]
+        and: "an activity suggestion dto"
+        activitySuggestionDto = new ActivitySuggestionDto()
+        activitySuggestionDto.setParticipantsNumberLimit(2)
+        activitySuggestionDto.setName(ACTIVITY_NAME_1)
+        activitySuggestionDto.setDescription(description)
+        activitySuggestionDto.setRegion(ACTIVITY_REGION_1)
+        activitySuggestionDto.setStartingDate(DateHandler.toISOString(IN_NINE_DAYS))
+        activitySuggestionDto.setEndingDate(DateHandler.toISOString(IN_TWELVE_DAYS))
+        activitySuggestionDto.setApplicationDeadline(DateHandler.toISOString(IN_EIGHT_DAYS))
+
+        when:
+        new ActivitySuggestion(institution, volunteer, activitySuggestionDto)
+
+        then:
+        def error = thrown(HEException)
+        error.getErrorMessage() == ErrorMessage.ACTIVITY_SUGGESTION_DESCRIPTION_LENGTH_INVALID
+
+        where:
+        description << ["a", "ab", "abc", "abcd", "abcde", "abcdef", "abcdefg", "abcdefgh", "abcdefghi"]
     }
 
     @TestConfiguration
