@@ -221,12 +221,16 @@ public class ActivitySuggestion {
         }
     }
 
-    private void nameIsUniqueForVolunteer() {       
-        if (this.volunteer.getActivitySuggestions().stream().anyMatch(s -> s.getName().equals(this.name))) {
+    private void nameIsUniqueForVolunteer() {
+        if (this.volunteer.getActivitySuggestions() == null) { return; }
+        
+        if (this.volunteer.getActivitySuggestions().stream()
+        .filter(s -> !s.equals(this)) // Exclude current instance
+        .anyMatch(s -> s.getName().equals(this.name))) {
             throw new HEException(ACTIVITY_SUGGESTION_NAME_UNIQUE_FOR_VOLUNTEER);
         }
     }
-
+    
     private void applicationDeadlineAfterCreation() {
         if (this.creationDate != null && this.applicationDeadline != null && !this.applicationDeadline.isAfter(this.creationDate.plusDays(7))) {
             throw new HEException(ACTIVITY_SUGGESTION_APPLICATION_DEADLINE_AFTER_CREATION);
