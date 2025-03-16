@@ -35,7 +35,7 @@ public class ActivitySuggestionController {
 
 
     @GetMapping("/{institutionId}")
-    @PreAuthorize("(hasRole('ROLE_MEMBER'))")
+    @PreAuthorize("(hasRole('ROLE_MEMBER') and hasPermission(#institutionId, 'INSTITUTION.MEMBER'))")
     public List<ActivitySuggestionDto> getActivitySuggestions(@PathVariable Integer institutionId) {
         return activitySuggestionService.getActivitySuggestionsByInstitution(institutionId);
     }

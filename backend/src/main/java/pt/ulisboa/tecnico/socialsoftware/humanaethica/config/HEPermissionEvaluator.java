@@ -17,6 +17,8 @@ import pt.ulisboa.tecnico.socialsoftware.humanaethica.report.domain.Report;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.report.ReportRepository;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.domain.Member;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.domain.Volunteer;
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.institution.domain.Institution;
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.institution.repository.InstitutionRepository;
 
 
 import java.io.Serializable;
@@ -33,6 +35,8 @@ public class HEPermissionEvaluator implements PermissionEvaluator {
     private AssessmentRepository assessmentRepository;
     @Autowired
     private ReportRepository reportRepository;
+    @Autowired
+    private InstitutionRepository institutionRepository;
 
 
     @Override
@@ -67,6 +71,10 @@ public class HEPermissionEvaluator implements PermissionEvaluator {
                     Participation participation1 = participationRepository.findById(id).orElse(null);
                     if (participation1 == null) return false;
                     return participation1.getVolunteer().getId().equals(((Volunteer)authUser.getUser()).getId());
+                case "INSTITUTION.MEMBER":
+                    Institution institution = institutionRepository.findById(id).orElse(null);
+                    if (institution == null) return false;
+                    return institution.getId().equals(((Member)authUser.getUser()).getInstitution().getId());
                 default:
                     return false;
             }
