@@ -6,8 +6,8 @@ import pt.ulisboa.tecnico.socialsoftware.humanaethica.assessment.domain.Assessme
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.enrollment.domain.Enrollment;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.auth.domain.AuthUser;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.participation.domain.Participation;
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.profile.domain.VolunteerProfile;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.report.domain.Report;
-import pt.ulisboa.tecnico.socialsoftware.humanaethica.activitysuggestion.domain.ActivitySuggestion;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ public class Volunteer extends User {
     @OneToMany(mappedBy = "volunteer")
     private List<Enrollment> enrollments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "volunteer")
+    @OneToMany(mappedBy = "volunteer", fetch = FetchType.EAGER)
     private List<Participation> participations = new ArrayList<>();
 
     @OneToMany(mappedBy = "volunteer")
@@ -27,10 +27,11 @@ public class Volunteer extends User {
     @OneToMany(mappedBy = "volunteer")
     private List<Report> reports = new ArrayList<>();
 
-    @OneToMany(mappedBy = "volunteer")
+    @OneToMany(mappedBy = "volunteer", fetch = FetchType.EAGER)
     private List<ActivitySuggestion> activitySuggestions = new ArrayList<>();
-    
 
+    @OneToOne(mappedBy = "volunteer")
+    private VolunteerProfile volunteerProfile;
 
     public Volunteer() {
     }
@@ -75,6 +76,14 @@ public class Volunteer extends User {
         this.participations.remove(participation);
     }
 
+    public List<ActivitySuggestion> getActivitySuggestions() {
+        return activitySuggestions;
+    }
+
+    public void addActivitySuggestion(ActivitySuggestion activitySuggestion) {
+        this.activitySuggestions.add(activitySuggestion);
+    }
+
     public List<Assessment> getAssessments() {
         return this.assessments;
     }
@@ -99,13 +108,11 @@ public class Volunteer extends User {
         return reports;
     }
 
-
-    public List<ActivitySuggestion> getActivitySuggestions() {
-        return activitySuggestions;
+    public VolunteerProfile getVolunteerProfile() {
+        return volunteerProfile;
     }
 
-    public void addActivitySuggestion(ActivitySuggestion activitySuggestion) {
-        this.activitySuggestions.add(activitySuggestion);
-
+    public void setVolunteerProfile(VolunteerProfile volunteerProfile) {
+        this.volunteerProfile = volunteerProfile;
     }
 }

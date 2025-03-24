@@ -1,38 +1,37 @@
 package pt.ulisboa.tecnico.socialsoftware.humanaethica.activitysuggestion.domain;
 
 import jakarta.persistence.*;
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.activitysuggestion.dto.ActivitySuggestionDto;
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.HEException;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.institution.domain.Institution;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.domain.Volunteer;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.utils.DateHandler;
-import pt.ulisboa.tecnico.socialsoftware.humanaethica.activitysuggestion.dto.ActivitySuggestionDto;
-import pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.HEException;
-
-import static pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.ErrorMessage.*;
 
 import java.time.LocalDateTime;
 
+import static pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.ErrorMessage.*;
 
 @Entity
-@Table(name = "activity_suggestion")
 public class ActivitySuggestion {
+
+    public static final int DAYS_AFTER_PROPOSAL = 7;
 
     public enum State {APPROVED, REJECTED, IN_REVIEW}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    private Integer participantsNumberLimit;
     private String name;
     private String description;
     private String region;
+    @Column(name = "creation_date")
     private LocalDateTime creationDate;
+    private LocalDateTime applicationDeadline;
     private LocalDateTime startingDate;
     private LocalDateTime endingDate;
-    private LocalDateTime applicationDeadline;
-
+    private Integer participantsNumberLimit;
     @Enumerated(EnumType.STRING)
-    private ActivitySuggestion.State state = ActivitySuggestion.State.IN_REVIEW;    // default state
+    private ActivitySuggestion.State state = State.IN_REVIEW;
 
     @ManyToOne
     private Institution institution;
@@ -44,14 +43,16 @@ public class ActivitySuggestion {
     }
 
     public ActivitySuggestion(Institution institution, Volunteer volunteer, ActivitySuggestionDto activitySuggestionDto) {
-        setParticipantsNumberLimit(activitySuggestionDto.getParticipantsNumberLimit());
         setName(activitySuggestionDto.getName());
         setDescription(activitySuggestionDto.getDescription());
         setRegion(activitySuggestionDto.getRegion());
         setCreationDate(DateHandler.now());
+        setApplicationDeadline(DateHandler.toLocalDateTime(activitySuggestionDto.getApplicationDeadline()));
         setStartingDate(DateHandler.toLocalDateTime(activitySuggestionDto.getStartingDate()));
         setEndingDate(DateHandler.toLocalDateTime(activitySuggestionDto.getEndingDate()));
-        setApplicationDeadline(DateHandler.toLocalDateTime(activitySuggestionDto.getApplicationDeadline()));
+        setParticipantsNumberLimit(activitySuggestionDto.getParticipantsNumberLimit());
+        setState(State.IN_REVIEW);
+
         setInstitution(institution);
         setVolunteer(volunteer);
 
@@ -60,14 +61,6 @@ public class ActivitySuggestion {
 
     public Integer getId() {
         return id;
-    }
-
-    public Integer getParticipantsNumberLimit() {
-        return participantsNumberLimit;
-    }
-
-    public void setParticipantsNumberLimit(Integer participantsNumberLimit) {
-        this.participantsNumberLimit = participantsNumberLimit;
     }
 
     public String getName() {
@@ -102,6 +95,14 @@ public class ActivitySuggestion {
         this.creationDate = creationDate;
     }
 
+    public LocalDateTime getApplicationDeadline() {
+        return applicationDeadline;
+    }
+
+    public void setApplicationDeadline(LocalDateTime applicationDeadline) {
+        this.applicationDeadline = applicationDeadline;
+    }
+
     public LocalDateTime getStartingDate() {
         return startingDate;
     }
@@ -118,12 +119,12 @@ public class ActivitySuggestion {
         this.endingDate = endingDate;
     }
 
-    public LocalDateTime getApplicationDeadline() {
-        return applicationDeadline;
+    public Integer getParticipantsNumberLimit() {
+        return participantsNumberLimit;
     }
 
-    public void setApplicationDeadline(LocalDateTime applicationDeadline) {
-        this.applicationDeadline = applicationDeadline;
+    public void setParticipantsNumberLimit(Integer participantsNumberLimit) {
+        this.participantsNumberLimit = participantsNumberLimit;
     }
 
     public ActivitySuggestion.State getState() {
@@ -134,13 +135,13 @@ public class ActivitySuggestion {
         this.state = state;
     }
 
-    public Institution getInstitution() {
-        return institution;
-    }
-
     public void setInstitution(Institution institution) {
         this.institution = institution;
         institution.addActivitySuggestion(this);
+    }
+
+    public Institution getInstitution() {
+        return institution;
     }
 
     public Volunteer getVolunteer() {
@@ -149,91 +150,31 @@ public class ActivitySuggestion {
 
     public void setVolunteer(Volunteer volunteer) {
         this.volunteer = volunteer;
-        volunteer.addActivitySuggestion(this);
+        this.volunteer.addActivitySuggestion(this);
     }
 
     private void verifyInvariants() {
-        nameIsRequired();
-        regionIsRequired();
-        descriptionIsRequired();
-        applicationDeadlineIsRequired();
-        startingDateIsRequired();
-        endingDateIsRequired();
-        applicationBeforeStartDate();
-        startBeforeEnd();
-        descriptionLength();
-        nameIsUniqueForVolunteer();
-        applicationDeadlineAfterCreation();
+        descriptionIsLongEnough();
+        nameIsUnique();
+        applicationDeadlineDaysAfterProposal(DAYS_AFTER_PROPOSAL);
     }
 
-    private void nameIsRequired() {
-        if (this.name == null || this.name.trim().isEmpty()) {
-            throw new HEException(ACTIVITY_SUGGESTION_NAME_INVALID, this.name);
-        }
-    }
-
-    private void regionIsRequired() {
-        if (this.region == null || this.region.trim().isEmpty()) {
-            throw new HEException(ACTIVITY_SUGGESTION_REGION_NAME_INVALID, this.region);
-        }
-    }
-
-    private void descriptionIsRequired() {
-        if (this.description == null || this.description.trim().isEmpty()) {
+    private void descriptionIsLongEnough() {
+        if (this.description == null || this.description.trim().length() < 10) {
             throw new HEException(ACTIVITY_SUGGESTION_DESCRIPTION_INVALID, this.description);
         }
     }
 
-    private void applicationDeadlineIsRequired() {
-        if (this.applicationDeadline == null) {
-            throw new HEException(ACTIVITY_SUGGESTION_INVALID_DATE, "Enrollment deadline");
-        }
-    }
-
-    private void startingDateIsRequired() {
-        if (this.startingDate == null) {
-            throw new HEException(ACTIVITY_SUGGESTION_INVALID_DATE, "Starting date");
-        }
-    }
-
-    private void endingDateIsRequired() {
-        if (this.endingDate == null) {
-            throw new HEException(ACTIVITY_SUGGESTION_INVALID_DATE, "Ending date");
-        }
-    }
-
-    private void applicationBeforeStartDate() {
-        if (!this.applicationDeadline.isBefore(this.startingDate)) {
-            throw new HEException(ACTIVITY_SUGGESTION_APPLICATION_DEADLINE_AFTER_START);
-        }
-    }
-
-    private void startBeforeEnd() {
-        if (!this.startingDate.isBefore(this.endingDate)) {
-            throw new HEException(ACTIVITY_SUGGESTION_START_AFTER_END);
-        }
-    }
-
-    private void descriptionLength() {
-        if (this.description.length() < 10) {
-            throw new HEException(ACTIVITY_SUGGESTION_DESCRIPTION_LENGTH_INVALID);
-        }
-    }
-
-    private void nameIsUniqueForVolunteer() {
-        if (this.volunteer.getActivitySuggestions() == null) { return; }
-        
+    private void nameIsUnique() {
         if (this.volunteer.getActivitySuggestions().stream()
-        .filter(s -> !s.equals(this)) // Exclude current instance
-        .anyMatch(s -> s.getName().equals(this.name))) {
-            throw new HEException(ACTIVITY_SUGGESTION_NAME_UNIQUE_FOR_VOLUNTEER);
+                .anyMatch(activitySuggestion -> activitySuggestion != this && activitySuggestion.getName().equals(this.getName()))) {
+            throw new HEException(ACTIVITY_SUGGESTION_NAME_ALREADY_EXISTS, this.name);
         }
     }
 
-    private void applicationDeadlineAfterCreation() {
-        if (this.creationDate != null && this.applicationDeadline != null && !this.applicationDeadline.isAfter(this.creationDate.plusDays(7))) {
-            throw new HEException(ACTIVITY_SUGGESTION_APPLICATION_DEADLINE_AFTER_CREATION);
+    private void applicationDeadlineDaysAfterProposal(int daysAfterProposal) {
+        if(this.applicationDeadline == null || this.applicationDeadline.isBefore(this.creationDate.plusDays(daysAfterProposal))) {
+            throw new HEException(ACTIVITY_SUGGESTION_APPLICATION_DEADLINE_TOO_SOON, daysAfterProposal);
         }
     }
 }
-

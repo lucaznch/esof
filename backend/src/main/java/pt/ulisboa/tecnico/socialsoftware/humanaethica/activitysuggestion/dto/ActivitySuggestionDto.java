@@ -1,45 +1,39 @@
 package pt.ulisboa.tecnico.socialsoftware.humanaethica.activitysuggestion.dto;
 
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.activitysuggestion.domain.ActivitySuggestion;
-import pt.ulisboa.tecnico.socialsoftware.humanaethica.institution.dto.InstitutionDto;
-import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.dto.UserDto;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.utils.DateHandler;
 
 public class ActivitySuggestionDto {
     private Integer id;
-    private Integer participantsNumberLimit;
     private String name;
     private String description;
     private String region;
     private String creationDate;
+    private String applicationDeadline;
     private String startingDate;
     private String endingDate;
-    private String applicationDeadline;
+    private Integer participantsNumberLimit;
     private String state;
-    private InstitutionDto institution;
-    private UserDto volunteer;
+
+    private Integer institutionId;
+    private Integer volunteerId;
 
     public ActivitySuggestionDto() {
     }
 
-    public ActivitySuggestionDto(ActivitySuggestion activitySuggestion, boolean deepCopyInstitution, boolean deepCopyVolunteer) {
+    public ActivitySuggestionDto(ActivitySuggestion activitySuggestion) {
         setId(activitySuggestion.getId());
-        setParticipantsNumberLimit(activitySuggestion.getParticipantsNumberLimit());
         setName(activitySuggestion.getName());
         setDescription(activitySuggestion.getDescription());
         setRegion(activitySuggestion.getRegion());
         setCreationDate(DateHandler.toISOString(activitySuggestion.getCreationDate()));
+        setApplicationDeadline(DateHandler.toISOString(activitySuggestion.getApplicationDeadline()));
         setStartingDate(DateHandler.toISOString(activitySuggestion.getStartingDate()));
         setEndingDate(DateHandler.toISOString(activitySuggestion.getEndingDate()));
-        setApplicationDeadline(DateHandler.toISOString(activitySuggestion.getApplicationDeadline()));
+        setParticipantsNumberLimit(activitySuggestion.getParticipantsNumberLimit());
         setState(activitySuggestion.getState().name());
-
-        if (deepCopyInstitution && (activitySuggestion.getInstitution() != null)) {
-            setInstitution(new InstitutionDto(activitySuggestion.getInstitution(), false, false));
-        }
-        if (deepCopyVolunteer && (activitySuggestion.getVolunteer() != null)) {
-            setVolunteer(new UserDto(activitySuggestion.getVolunteer()));
-        }
+        setInstitutionId(activitySuggestion.getInstitution().getId());
+        setVolunteerId(activitySuggestion.getVolunteer().getId());
     }
 
     public Integer getId() {
@@ -48,14 +42,6 @@ public class ActivitySuggestionDto {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Integer getParticipantsNumberLimit() {
-        return participantsNumberLimit;
-    }
-
-    public void setParticipantsNumberLimit(Integer participantsNumberLimit) {
-        this.participantsNumberLimit = participantsNumberLimit;
     }
 
     public String getName() {
@@ -90,6 +76,14 @@ public class ActivitySuggestionDto {
         this.creationDate = creationDate;
     }
 
+    public String getApplicationDeadline() {
+        return applicationDeadline;
+    }
+
+    public void setApplicationDeadline(String applicationDeadline) {
+        this.applicationDeadline = applicationDeadline;
+    }
+
     public String getStartingDate() {
         return startingDate;
     }
@@ -106,12 +100,12 @@ public class ActivitySuggestionDto {
         this.endingDate = endingDate;
     }
 
-    public String getApplicationDeadline() {
-        return applicationDeadline;
+    public Integer getParticipantsNumberLimit() {
+        return participantsNumberLimit;
     }
 
-    public void setApplicationDeadline(String applicationDeadline) {
-        this.applicationDeadline = applicationDeadline;
+    public void setParticipantsNumberLimit(Integer participantsNumberLimit) {
+        this.participantsNumberLimit = participantsNumberLimit;
     }
 
     public String getState() {
@@ -122,38 +116,35 @@ public class ActivitySuggestionDto {
         this.state = state;
     }
 
-    public InstitutionDto getInstitution() {
-        return institution;
+    public Integer getInstitutionId() {
+        return institutionId;
     }
 
-    public void setInstitution(InstitutionDto institution) {
-        this.institution = institution;
+    public void setInstitutionId(Integer institutionId) {
+        this.institutionId = institutionId;
     }
 
-    public UserDto getVolunteer() {
-        return volunteer;
+    public Integer getVolunteerId() {
+        return volunteerId;
     }
 
-    public void setVolunteer(UserDto volunteer) {
-        this.volunteer = volunteer;
+    public void setVolunteerId(Integer volunteerId) {
+        this.volunteerId = volunteerId;
     }
 
     @Override
     public String toString() {
-        return "SuggestionDto{" +
+        return "ActivitySuggestionDto{" +
                 "id=" + id +
-                ", participantsNumberLimit=" + participantsNumberLimit +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", region='" + region + '\'' +
                 ", creationDate='" + creationDate + '\'' +
+                ", applicationDeadline='" + applicationDeadline + '\'' +
                 ", startingDate='" + startingDate + '\'' +
                 ", endingDate='" + endingDate + '\'' +
-                ", applicationDeadline='" + applicationDeadline + '\'' +
+                ", participantsNumberLimit=" + participantsNumberLimit +
                 ", state='" + state + '\'' +
-                ", institution=" + institution +
-                ", volunteer=" + volunteer +
                 '}';
     }
 }
-

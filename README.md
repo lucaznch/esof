@@ -52,15 +52,30 @@ cd backend
 mvn clean spring-boot:run
 ```
 * **See documentation on http://localhost:8080/swagger-ui.html**
-* **Rename `frontend/example.env` to `.env` and fill its fields**
+
+
+* **Copy `frontend/example.env` to `frontend/.env` and uncomment for bare metal run**
+* **Run Cypress Tests**
+```
+cd frontend
+npx cypress run
+```
+
+* **Interactive Run of Cypress Tests**
+```
+cd frontend
+npx cypress open
+```
 * **Run frontend**
 ```
 cd frontend
 npm i
 npm start
 ```
-
 * **Access http://localhost:8081**
+
+
+
 
 The [following video](https://youtu.be/D0JABlXCdlo) shows how setup when you install the software in your machine. Requires the software mentioned above.
 
@@ -78,6 +93,11 @@ cp data/access.log.example data/access.log
 * Copy data/access.log.example to data/access.log
 ```
 cp data/error.log.example data/error.log
+```
+
+* Copy frontend/example.env to frontend/.env, and uncomment for docker compose up frontend
+```
+cp frontend/example.env frontend/.env
 ```
 
 * Build HumanaEthica in project top directory, where docker-compose.yml is
@@ -132,6 +152,29 @@ INTEGRATION=ValidateActivityWebServiceIT docker compose up integration-tests
 ```
 INTEGRATION=ValidateActivityWebServiceIT#"volunteer validate activity" docker compose up integration-tests
 ```
+
+* **Run Cypress Tests**
+* uncomment frontend/.env for docker compose up e2e-run
+```
+docker compose up e2e-run
+```
+
+* **Open Cypress Tests**
+* uncomment frontend/.env for docker compose up e2e-open
+* Install X server
+* * In OSX follow the [instructions](https://opencmiss-iron-tutorials.readthedocs.io/en/latest/faq/docker/setup_xquartz_x11_server_mac.html)
+* * In Ubuntu
+* * In WSL
+* * In Windows
+* Set environment variable DISPLAY=HOSTNAME:0, where HOSTNAME is obtained by 
+```
+ifconfig en0 | grep inet | awk '$1=="inet" {print $2}'
+```
+* Run docker
+```
+docker compose up e2e-open
+```
+
 
 # Development Container
 An easy way to obtain a working development environment is to use the _development container_ provided (see folder `.devcontainer`). This requires [Docker](https://docs.docker.com/get-docker/).

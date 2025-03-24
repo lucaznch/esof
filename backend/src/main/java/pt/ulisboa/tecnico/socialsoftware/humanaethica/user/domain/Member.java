@@ -6,10 +6,6 @@ import jakarta.persistence.ManyToOne;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.auth.domain.AuthUser;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.institution.domain.Institution;
 
-import pt.ulisboa.tecnico.socialsoftware.humanaethica.activitysuggestion.domain.ActivitySuggestion;
-
-import java.util.List;
-
 @Entity
 @DiscriminatorValue(User.UserTypes.MEMBER)
 public class Member extends User {
