@@ -42,7 +42,7 @@ export default class VolunteerActivitySuggestionsView extends Vue {
     },
     {
       text: 'Institution',
-      value: 'institution',
+      value: 'Institution.name',
       align: 'left',
       width: '10%',
     },
