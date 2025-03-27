@@ -1,0 +1,50 @@
+import { ISOtoString } from "@/services/ConvertDateService";
+import Institution from "../institution/Institution";
+import Volunteer from "../volunteer/Volunteer";
+
+export default class ActivitySuggestion {
+
+    id: number | null = null;
+    name!: string;
+    description!: string;
+    region!: string;
+    creationDate!: string;
+    applicationDeadline!: string;
+    formattedApplicationDeadline!: string;
+    startingDate!: string;
+    formattedStartingDate!: string;
+    endingDate!: string;
+    formattedEndingDate!: string;
+    participantsNumberLimit!: number;
+    state!: string;
+    institutionId!: number;
+    volunteerId!: number;
+    //institution!: Institution;  // do I need this?
+    //volunteer!: Volunteer;      // do I need this?
+
+
+    constructor(jsonObj?: ActivitySuggestion) {
+        if (jsonObj) {
+            this.id = jsonObj.id;
+            this.name = jsonObj.name;
+            this.description = jsonObj.description;
+            this.region = jsonObj.region;
+            this.creationDate = ISOtoString(jsonObj.creationDate);
+            this.applicationDeadline = jsonObj.applicationDeadline;
+            if (jsonObj.applicationDeadline)
+                this.formattedApplicationDeadline = ISOtoString(jsonObj.applicationDeadline);
+            this.startingDate = jsonObj.startingDate;
+            if (jsonObj.startingDate)
+                this.formattedStartingDate = ISOtoString(jsonObj.startingDate);
+            this.endingDate = jsonObj.endingDate;
+            if (jsonObj.endingDate)
+                this.formattedEndingDate = ISOtoString(jsonObj.endingDate);
+            this.participantsNumberLimit = jsonObj.participantsNumberLimit;
+            this.state = jsonObj.state;
+            this.institutionId = jsonObj.institutionId;
+            this.volunteerId = jsonObj.volunteerId;
+            // this.institution = jsonObj.institution;  // do I need this?
+            // this.volunteer = jsonObj.volunteer;      // do I need this?
+        }
+    }
+}

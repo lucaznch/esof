@@ -25,13 +25,14 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import ActivitySuggestion from '@/models/activitysuggestion/ActivitySuggestion';
 
 @Component({
   components: {
   },
 })
 export default class VolunteerActivitySuggestionsView extends Vue {
-  //activitySuggestions: ActivitySuggestion[] = []; // TODO: this is the object that will be used to fill in the table
+  activitySuggestions: ActivitySuggestion[] = [];
   search: string = '';
   headers: object = [
     {
