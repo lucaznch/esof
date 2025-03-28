@@ -17,9 +17,13 @@
             class="mx-2"
           />
           <v-spacer />
+          <v-btn color="primary" dark @click="newActivitySuggestion" data-cy="newActivitySuggestion"
+            >New Activity Suggestion</v-btn
+          >
         </v-card-title>
       </template>
     </v-data-table>
+    <!-- TODO: New ActivitySuggestion Dialog -->
   </v-card>
 </template>
 
@@ -35,6 +39,7 @@ import ActivitySuggestion from '@/models/activitysuggestion/ActivitySuggestion';
 export default class VolunteerActivitySuggestionsView extends Vue {
   activitySuggestions: ActivitySuggestion[] = [];
   search: string = '';
+  
   headers: object = [
     {
       text: 'Name',
@@ -108,6 +113,11 @@ export default class VolunteerActivitySuggestionsView extends Vue {
     }
     await this.$store.dispatch('clearLoading');
   }
+
+  newActivitySuggestion() {
+    console.log('New Activity Suggestion clicked');
+  }
+
 }
 </script>
 
