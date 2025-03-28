@@ -29,4 +29,10 @@ public class ActivitySuggestionController {
         int userId = ((AuthUser) ((Authentication) principal).getPrincipal()).getUser().getId();
         return activitySuggestionService.createActivitySuggestion(userId, institutionId, activitySuggestionDto);
     }
+
+    @GetMapping("/volunteer/{volunteerId}")
+    @PreAuthorize("hasRole('ROLE_VOLUNTEER')")
+    public List<ActivitySuggestionDto> getActivitySuggestionsByVolunteer(@PathVariable Integer volunteerId) {
+        return this.activitySuggestionService.getActivitySuggestionsByVolunteer(volunteerId);
+    }
 }

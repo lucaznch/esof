@@ -52,4 +52,14 @@ public class ActivitySuggestionService {
 
         return new ActivitySuggestionDto(activitySuggestion);
     }
+
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public List<ActivitySuggestionDto> getActivitySuggestionsByVolunteer(Integer volunteerId) {
+        if (volunteerId == null) throw new HEException(USER_NOT_FOUND);
+        userRepository.findById(volunteerId).orElseThrow(() -> new HEException(USER_NOT_FOUND));
+
+        return this.activitySuggestionRepository.getActivitySuggestionsByVolunteerId(volunteerId).stream()
+                .map(ActivitySuggestionDto::new)
+                .toList();
+    }
 }
