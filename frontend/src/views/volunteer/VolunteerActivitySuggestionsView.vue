@@ -102,7 +102,6 @@ export default class VolunteerActivitySuggestionsView extends Vue {
     await this.$store.dispatch('loading');
     try {
       let userId = this.$store.getters.getUser.id;
-      console.log("userId: ", userId);
       this.activitySuggestions = await RemoteServices.getActivitySuggestionsByVolunteer(userId);
     } catch (error) {
       await this.$store.dispatch('error', error);
