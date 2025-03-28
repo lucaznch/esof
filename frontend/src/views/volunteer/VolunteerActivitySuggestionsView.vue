@@ -25,6 +25,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import RemoteServices from '@/services/RemoteServices';
 import ActivitySuggestion from '@/models/activitysuggestion/ActivitySuggestion';
 
 @Component({
@@ -100,7 +101,9 @@ export default class VolunteerActivitySuggestionsView extends Vue {
   async created() {
     await this.$store.dispatch('loading');
     try {
-      // TODO
+      let userId = this.$store.getters.getUser.id;
+      console.log("userId: ", userId);
+      this.activitySuggestions = await RemoteServices.getActivitySuggestionsByVolunteer(userId);
     } catch (error) {
       await this.$store.dispatch('error', error);
     }
