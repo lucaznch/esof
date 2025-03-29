@@ -23,7 +23,15 @@
         </v-card-title>
       </template>
     </v-data-table>
-    <!-- TODO: New ActivitySuggestion Dialog -->
+
+    <activitysuggestion-dialog
+      v-if="currentActivitySuggestion && editActivitySuggestionDialog"
+      v-model="editActivitySuggestionDialog"
+      :activity-suggestion="currentActivitySuggestion"
+      v-on:save-activity-suggestion="onSaveActivitySuggestion"
+      v-on:close-activity-dialog="onCloseActivitySuggestionDialog"
+    />
+
   </v-card>
 </template>
 
@@ -31,15 +39,21 @@
 import { Component, Vue } from 'vue-property-decorator';
 import RemoteServices from '@/services/RemoteServices';
 import ActivitySuggestion from '@/models/activitysuggestion/ActivitySuggestion';
+import ActivitySuggestionDialog from '@/views/volunteer/ActivitySuggestionDialog.vue';
 
 @Component({
   components: {
+    'activitysuggestion-dialog': ActivitySuggestionDialog,
   },
 })
 export default class VolunteerActivitySuggestionsView extends Vue {
   activitySuggestions: ActivitySuggestion[] = [];
   search: string = '';
   
+  currentActivitySuggestion: ActivitySuggestion | null = null;
+  editActivitySuggestionDialog: boolean = false;
+  suspendActivitySuggestionDialog: boolean = false;
+
   headers: object = [
     {
       text: 'Name',
@@ -115,9 +129,34 @@ export default class VolunteerActivitySuggestionsView extends Vue {
   }
 
   newActivitySuggestion() {
-    console.log('New Activity Suggestion clicked');
+    this.currentActivitySuggestion = new ActivitySuggestion();
+    this.editActivitySuggestionDialog = true;
   }
 
+  editActivitySuggestion(activitySuggestion: ActivitySuggestion) {
+    this.currentActivitySuggestion = activitySuggestion;
+    this.editActivitySuggestionDialog = true;
+  }
+
+  onCloseActivitySuggestionDialog() {
+    this.currentActivitySuggestion = null;
+    this.editActivitySuggestionDialog = false;
+  }
+
+  onSaveActivitySuggestion(activitySuggestion: ActivitySuggestion) {
+    this.currentActivitySuggestion = null;
+    this.editActivitySuggestionDialog = false;
+  }
+
+  suspendActivitySuggestion(activitySuggestion: ActivitySuggestion) {
+    this.currentActivitySuggestion = null;
+    this.suspendActivitySuggestionDialog = true;
+  }
+
+  onCloseSuspendActivitySuggestionDialog() {
+    this.currentActivitySuggestion = null;
+    this.suspendActivitySuggestionDialog = false;
+  }
 }
 </script>
 
