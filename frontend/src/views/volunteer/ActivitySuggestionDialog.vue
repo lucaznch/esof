@@ -47,9 +47,11 @@
               <v-col cols="12" sm="6">
                 <v-select
                   label="Institution"
+                  v-model="selectedInstitutions"
+                  :items="allInstitutions"
                   multiple
                   return-object
-                  item-text="completeName"
+                  item-text="name"
                   item-value="id"
                   required
                 />
@@ -118,6 +120,7 @@
   import VueCtkDateTimePicker from 'vue-ctk-date-time-picker';
   import 'vue-ctk-date-time-picker/dist/vue-ctk-date-time-picker.css';
   import { ISOtoString } from '@/services/ConvertDateService';
+  import Institution from '@/models/institution/Institution';
   
   Vue.component('VueCtkDateTimePicker', VueCtkDateTimePicker);
   @Component({
@@ -126,13 +129,17 @@
   export default class ActivityDialog extends Vue {
     @Model('dialog', Boolean) dialog!: boolean;
     @Prop({ type: ActivitySuggestion, required: true }) readonly activitySuggestion!: ActivitySuggestion;
+    @Prop({ type: Array, required: true }) readonly institutions!: Institution[];
   
     editActivitySuggestion: ActivitySuggestion = new ActivitySuggestion();
+    allInstitutions: Institution[] = [];
+    selectedInstitutions: Institution[] = [];
   
     cypressCondition: boolean = false;
   
     async created() {
       this.editActivitySuggestion = new ActivitySuggestion(this.activitySuggestion);
+      this.allInstitutions = await RemoteServices.getInstitutions();
     }
   
     isNumberValid(value: any) {
@@ -156,8 +163,10 @@
   
     async updateActivity() {
       // TODO
-      console.log('updateActivity');
+      console.log('save new activity suggestion!');
     }
+
+    
   }
   </script>
   

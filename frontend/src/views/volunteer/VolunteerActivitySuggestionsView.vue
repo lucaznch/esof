@@ -28,6 +28,7 @@
       v-if="currentActivitySuggestion && editActivitySuggestionDialog"
       v-model="editActivitySuggestionDialog"
       :activity-suggestion="currentActivitySuggestion"
+      :institutions="institutions"
       v-on:save-activity-suggestion="onSaveActivitySuggestion"
       v-on:close-activity-dialog="onCloseActivitySuggestionDialog"
     />
@@ -40,6 +41,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import RemoteServices from '@/services/RemoteServices';
 import ActivitySuggestion from '@/models/activitysuggestion/ActivitySuggestion';
 import ActivitySuggestionDialog from '@/views/volunteer/ActivitySuggestionDialog.vue';
+import Institution from '@/models/institution/Institution';
 
 @Component({
   components: {
@@ -48,6 +50,7 @@ import ActivitySuggestionDialog from '@/views/volunteer/ActivitySuggestionDialog
 })
 export default class VolunteerActivitySuggestionsView extends Vue {
   activitySuggestions: ActivitySuggestion[] = [];
+  institutions: Institution[] = [];
   search: string = '';
   
   currentActivitySuggestion: ActivitySuggestion | null = null;
