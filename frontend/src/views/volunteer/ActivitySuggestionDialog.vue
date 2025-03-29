@@ -104,7 +104,7 @@
           <v-btn
             color="blue-darken-1"
             variant="text"
-            @click="updateActivity"
+            @click="registerActivitySuggestion"
             :disabled="!canSave"
             data-cy="saveActivity"
           >
@@ -130,7 +130,7 @@
   export default class ActivityDialog extends Vue {
     @Model('dialog', Boolean) dialog!: boolean;
     @Prop({ type: ActivitySuggestion, required: true }) readonly activitySuggestion!: ActivitySuggestion;
-    @Prop({ type: Array, required: true }) readonly institutions!: Institution[];
+    @Prop({ type: Array, required: true }) readonly institutions!: Institution[]; // this is not used in the template, but it is passed as a prop
   
     editActivitySuggestion: ActivitySuggestion = new ActivitySuggestion();
     allInstitutions: Institution[] = [];
@@ -163,9 +163,21 @@
       );
     }
   
-    async updateActivity() {
-      // TODO
-      console.log('save new activity suggestion!');
+    async registerActivitySuggestion() {
+      if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
+        try {
+          const institutionId = this.selectedInstitutions[0].id;
+          if (!institutionId) {
+            throw new Error('Institution ID is required');
+          }
+          this.editActivitySuggestion.institutionId = institutionId;
+          const result = await RemoteServices.createActivitySuggestion(institutionId, this.editActivitySuggestion);
+          this.$emit('save-activity-suggestion', result);
+        }
+        catch (error) {
+          await this.$store.dispatch('error', error);
+        }
+      }
     }
 
     

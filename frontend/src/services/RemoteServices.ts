@@ -486,6 +486,17 @@ export default class RemoteServices {
       });
   }
 
+  static async createActivitySuggestion(institutionId: number, activitySuggestion: ActivitySuggestion) {
+    return httpClient
+      .post(`/activitySuggestions/institution/${institutionId}`, activitySuggestion)
+      .then((response) => {
+        return new ActivitySuggestion(response.data);
+      })
+      .catch(async (error) => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
   // Enrollment controller
 
   static async getActivityEnrollments(activityId: number) {

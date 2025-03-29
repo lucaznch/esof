@@ -30,7 +30,7 @@
       :activity-suggestion="currentActivitySuggestion"
       :institutions="institutions"
       v-on:save-activity-suggestion="onSaveActivitySuggestion"
-      v-on:close-activity-dialog="onCloseActivitySuggestionDialog"
+      v-on:close-activity-suggestion-dialog="onCloseActivitySuggestionDialog"
     />
 
   </v-card>
@@ -147,18 +147,9 @@ export default class VolunteerActivitySuggestionsView extends Vue {
   }
 
   onSaveActivitySuggestion(activitySuggestion: ActivitySuggestion) {
+    this.activitySuggestions.unshift(activitySuggestion);
     this.currentActivitySuggestion = null;
     this.editActivitySuggestionDialog = false;
-  }
-
-  suspendActivitySuggestion(activitySuggestion: ActivitySuggestion) {
-    this.currentActivitySuggestion = null;
-    this.suspendActivitySuggestionDialog = true;
-  }
-
-  onCloseSuspendActivitySuggestionDialog() {
-    this.currentActivitySuggestion = null;
-    this.suspendActivitySuggestionDialog = false;
   }
 }
 </script>
