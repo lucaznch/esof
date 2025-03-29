@@ -105,6 +105,7 @@
             color="blue-darken-1"
             variant="text"
             @click="updateActivity"
+            :disabled="!canSave"
             data-cy="saveActivity"
           >
             Save
@@ -157,7 +158,8 @@
           !!this.editActivitySuggestion.description &&
           !!this.editActivitySuggestion.startingDate &&
           !!this.editActivitySuggestion.endingDate &&
-          !!this.editActivitySuggestion.applicationDeadline)
+          !!this.editActivitySuggestion.applicationDeadline) &&
+          this.selectedInstitutions.length > 0
       );
     }
   
