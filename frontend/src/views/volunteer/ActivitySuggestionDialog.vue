@@ -5,8 +5,8 @@
           <span class="headline">
             {{
               editActivitySuggestion && editActivitySuggestion.id === null
-                ? 'New Activity'
-                : 'Edit Activity'
+                ? 'New Activity Suggestion'
+                : 'Edit Activity Suggestion'
             }}
           </span>
         </v-card-title>
