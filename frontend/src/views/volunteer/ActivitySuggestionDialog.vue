@@ -48,7 +48,7 @@
                 <v-select
                   label="Institution"
                   v-model="selectedInstitutions"
-                  :items="allInstitutions"
+                  :items="institutions"
                   multiple
                   return-object
                   item-text="name"
@@ -97,7 +97,7 @@
           <v-btn
             color="blue-darken-1"
             variant="text"
-            @click="$emit('close-activity-dialog')"
+            @click="$emit('close-activity-suggestion-dialog')"
           >
             Close
           </v-btn>
@@ -133,14 +133,12 @@
     @Prop({ type: Array, required: true }) readonly institutions!: Institution[]; // this is not used in the template, but it is passed as a prop
   
     editActivitySuggestion: ActivitySuggestion = new ActivitySuggestion();
-    allInstitutions: Institution[] = [];
     selectedInstitutions: Institution[] = [];
   
     cypressCondition: boolean = false;
   
     async created() {
       this.editActivitySuggestion = new ActivitySuggestion(this.activitySuggestion);
-      this.allInstitutions = await RemoteServices.getInstitutions();
     }
   
     isNumberValid(value: any) {
