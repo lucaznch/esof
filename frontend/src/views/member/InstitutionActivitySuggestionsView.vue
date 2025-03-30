@@ -28,15 +28,18 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import Institution from '@/models/institution/Institution';
+import ActivitySuggestion from '@/models/activitysuggestion/ActivitySuggestion';
+import RemoteServices from '@/services/RemoteServices';
 
 @Component({
   components: {
   },
 })
 export default class VolunteerActivitySuggestionsView extends Vue {
-  //activitySuggestions: ActivitySuggestion[] = []; // TODO: this is the object that will be used to fill in the table
+  activitySuggestions: ActivitySuggestion[] = [];
   institution: Institution = new Institution();
   search: string = '';
+
   headers: object = [
     {
       text: 'Name',
@@ -103,7 +106,13 @@ export default class VolunteerActivitySuggestionsView extends Vue {
   async created() {
     await this.$store.dispatch('loading');
     try {
-      // TODO
+      let userId = this.$store.getters.getUser.id;
+      this.institution = await RemoteServices.getInstitution(userId);
+      const institutionId = this.institution.id;
+      if (!institutionId) {
+        throw new Error('Institution ID not found');
+      }
+      this.activitySuggestions = await RemoteServices.getActivitySuggestionsByInstitution(institutionId);
     } catch (error) {
       await this.$store.dispatch('error', error);
     }

@@ -486,6 +486,19 @@ export default class RemoteServices {
       });
   }
 
+  static async getActivitySuggestionsByInstitution(institutionId: number): Promise<ActivitySuggestion[]> {
+    return httpClient
+      .get(`/activitySuggestions/institution/${institutionId}`)
+      .then((response) => {
+        return response.data.map((activitySuggestion: any) => {
+          return new ActivitySuggestion(activitySuggestion);
+        });
+      })
+      .catch(async (error) => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
   static async createActivitySuggestion(institutionId: number, activitySuggestion: ActivitySuggestion) {
     return httpClient
       .post(`/activitySuggestions/institution/${institutionId}`, activitySuggestion)
