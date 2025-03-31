@@ -22,28 +22,6 @@
                 data-cy="nameInput"
               ></v-text-field>
             </v-col>
-            <v-col cols="12">
-              <v-text-field
-                label="*Region"
-                :rules="[(v) => !!v || 'Region name is required']"
-                required
-                v-model="editActivitySuggestion.region"
-                data-cy="regionInput"
-              ></v-text-field>
-            </v-col>
-            <v-col cols="12" sm="6" md="4">
-              <v-text-field
-                label="*Number of Participants"
-                :rules="[
-                  (v) =>
-                    isNumberValid(v) ||
-                    'Number of participants is required',
-                ]"
-                required
-                v-model="editActivitySuggestion.participantsNumberLimit"
-                data-cy="participantsNumberInput"
-              ></v-text-field>
-            </v-col>
             <v-col cols="12" sm="6">
               <v-select
                 label="Institution"
@@ -62,6 +40,28 @@
                 required
                 v-model="editActivitySuggestion.description"
                 data-cy="descriptionInput"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12">
+              <v-text-field
+                label="*Region"
+                :rules="[(v) => !!v || 'Region name is required']"
+                required
+                v-model="editActivitySuggestion.region"
+                data-cy="regionInput"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12">
+              <v-text-field
+                label="*Number of Participants"
+                :rules="[
+                  (v) =>
+                    isNumberValid(v) ||
+                    'Number of participants is required',
+                ]"
+                required
+                v-model="editActivitySuggestion.participantsNumberLimit"
+                data-cy="participantsNumberInput"
               ></v-text-field>
             </v-col>
             <v-col>
@@ -180,3 +180,4 @@ export default class ActivityDialog extends Vue {
 </script>
 
 <style scoped lang="scss"></style>
+  
