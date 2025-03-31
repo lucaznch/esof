@@ -8,6 +8,9 @@
       :hide-default-footer="true"
       :mobile-breakpoint="0"
     >
+      <template v-slot:item.institutionName="{ item }">
+        {{ getInstitutionName(item.institutionId) }}
+      </template>
       <template v-slot:top>
         <v-card-title>
           <v-text-field
@@ -65,8 +68,8 @@ export default class VolunteerActivitySuggestionsView extends Vue {
       width: '10%',
     },
     {
-      text: 'Institution ID',
-      value: 'institutionId',
+      text: 'Institution',
+      value: 'institutionName',
       align: 'left',
       width: '10%',
     },
@@ -151,6 +154,11 @@ export default class VolunteerActivitySuggestionsView extends Vue {
     this.activitySuggestions.unshift(activitySuggestion);
     this.currentActivitySuggestion = null;
     this.editActivitySuggestionDialog = false;
+  }
+
+  getInstitutionName(institutionId: number): string {
+    const institution = this.institutions.find((inst) => inst.id === institutionId);
+    return institution ? institution.name : 'unknown';
   }
 }
 </script>
