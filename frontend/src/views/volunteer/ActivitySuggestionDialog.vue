@@ -47,9 +47,8 @@
             <v-col cols="12" sm="6">
               <v-select
                 label="Institution"
-                v-model="selectedInstitutions"
+                v-model="selectedInstitution"
                 :items="institutions"
-                multiple
                 return-object
                 item-text="name"
                 item-value="id"
@@ -133,7 +132,7 @@ export default class ActivityDialog extends Vue {
   @Prop({ type: Array, required: true }) readonly institutions!: Institution[];
 
   editActivitySuggestion: ActivitySuggestion = new ActivitySuggestion();
-  selectedInstitutions: Institution[] = [];
+  selectedInstitution: Institution | null = null;
 
   cypressCondition: boolean = false;
 
@@ -157,14 +156,14 @@ export default class ActivityDialog extends Vue {
         !!this.editActivitySuggestion.startingDate &&
         !!this.editActivitySuggestion.endingDate &&
         !!this.editActivitySuggestion.applicationDeadline) &&
-        this.selectedInstitutions.length > 0
+        !!this.selectedInstitution
     );
   }
 
   async registerActivitySuggestion() {
     if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
       try {
-        const institutionId = this.selectedInstitutions[0].id;
+        const institutionId = this.selectedInstitution?.id;
         if (!institutionId) {
           throw new Error('Institution ID is required');
         }
