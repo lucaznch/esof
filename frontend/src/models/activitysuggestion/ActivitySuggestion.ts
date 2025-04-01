@@ -1,6 +1,4 @@
 import { ISOtoString } from "@/services/ConvertDateService";
-import Institution from "../institution/Institution";
-import Volunteer from "../volunteer/Volunteer";
 
 export default class ActivitySuggestion {
 
@@ -19,10 +17,8 @@ export default class ActivitySuggestion {
     state!: string;
     institutionId!: number;
     volunteerId!: number;
-    //institution!: Institution;  // do I need this?
-    //volunteer!: Volunteer;      // do I need this?
 
-
+    
     constructor(jsonObj?: ActivitySuggestion) {
         if (jsonObj) {
             this.id = jsonObj.id;
@@ -43,8 +39,6 @@ export default class ActivitySuggestion {
             this.state = jsonObj.state;
             this.institutionId = jsonObj.institutionId;
             this.volunteerId = jsonObj.volunteerId;
-            // this.institution = jsonObj.institution;  // do I need this?
-            // this.volunteer = jsonObj.volunteer;      // do I need this?
         }
     }
 }
