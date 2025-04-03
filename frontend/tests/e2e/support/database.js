@@ -89,6 +89,19 @@ Cypress.Commands.add('createDemoEntities', () => {
   })
 });
 
+Cypress.Commands.add('createDatabaseInfoForActivitySuggestions', () => {
+  cy.task('queryDatabase',  {
+    query: "INSERT INTO " + ACTIVITYSUGGESTION_COLUMNS + generateActivitySuggestionTuple(1, "Cãocerto Solidário", "Concerto solidário", yesterday.toISOString(), tomorrow.toISOString(),
+      dayAfterTomorrow.toISOString(),5, 1, 3),
+    credentials: credentials,
+  })
+  cy.task('queryDatabase',  {
+    query: "INSERT INTO " + ACTIVITYSUGGESTION_COLUMNS + generateActivitySuggestionTuple(2, "Leilão de Latidos", "Leilão solidário para angariar fundos", tomorrow.toISOString(), tomorrow.toISOString(),
+      tomorrow.toISOString(),3, 1, 3),
+    credentials: credentials,
+  })
+});
+
 Cypress.Commands.add('createDatabaseInfoForEnrollments', () => {
   cy.task('queryDatabase',  {
     query: "INSERT INTO " + ACTIVITY_COLUMNS + generateActivityTuple(1, "A1", "Enrollment is open",  tomorrow.toISOString(), tomorrow.toISOString(),
@@ -294,6 +307,21 @@ function generateActivityTuple(id, name, description, deadline, start, end, part
     "', 'Lisbon',  '"
     + start + "', 'APPROVED', " +
     institutionId + ")";
+}
+
+function generateActivitySuggestionTuple(id, name, description, deadline, start, end, participants, institutionId, volunteerId) {
+  return "VALUES ('"
+    + id + "', '"
+    + deadline +
+    "', '2022-08-06 17:58:21.402146', '" +
+    description + "', '"
+    + end + "', '"
+    + name + "', '" +
+    participants +
+    "', 'Lisbon',  '"
+    + start + "', 'IN_REVIEW', " +
+    institutionId + ", " +
+    volunteerId + ")";
 }
 
 function generateEnrollmentTuple(id, activityId, volunteerId) {

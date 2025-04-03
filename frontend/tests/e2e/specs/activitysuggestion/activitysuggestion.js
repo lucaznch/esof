@@ -2,6 +2,7 @@ describe('ActivitySuggestion', () => {
   beforeEach(() => {
     cy.deleteAllButArs();
     cy.createDemoEntities();
+    cy.createDatabaseInfoForActivitySuggestions();
   });
 
   afterEach(() => {
@@ -9,9 +10,9 @@ describe('ActivitySuggestion', () => {
   });
 
   it('create activity suggestion', () => {
-    const NAME = 'Cãocerto Solidário';
-    const DESCRIPTION = 'Concerto solidário';
-    const REGION = 'Lisboa';
+    const NAME = 'Sugestão de atividade';
+    const DESCRIPTION = 'Nova sugestão de atividade';
+    const REGION = 'Sintra';
     const NUMBER = '5';
     const INSTITUTION_NAME = 'DEMO INSTITUTION';
 
@@ -50,10 +51,22 @@ describe('ActivitySuggestion', () => {
     cy.get('[data-cy="volunteerActivitySuggestions"]').click();
     cy.wait('@getInstitutions');
 
+
+    // - - - - - - - - - - CHECK - - - - - - - - - -
+    // verify if the table has 2 activity suggestions before creating a new one
+    cy.get('[data-cy="volunteerActivitySuggestionsTable"] tbody tr')
+      .should('have.length', 2)   // check that the table has 2 rows
+      .eq(0)
+      .children()
+      .should('have.length', 10)  // check that rows have 10 columns
+
+
     // go to ActivitySuggestionDialog
     cy.get('[data-cy="newActivitySuggestion"]').click();
     
-    // fill form
+
+    // - - - - - - - - - - CREATE - - - - - - - - - -
+    // fill dialog form and create activity suggestion
     cy.get('[data-cy="nameInput"]').type(NAME);
     
     cy.get('[data-cy="institutionInput"]').click();
@@ -81,19 +94,23 @@ describe('ActivitySuggestion', () => {
       .click({force: true});
     
 
-    // save form
+    // save dialog form - create activity suggestion
     cy.get('[data-cy="saveActivity"]').click()
     // check request was done
     cy.wait('@register')
     
-    // check results
+
+    // - - - - - - - - - - CHECK - - - - - - - - - -
+    // check if the table has now 3 activity suggestions
     cy.get('[data-cy="volunteerActivitySuggestionsTable"] tbody tr')
-      .should('have.length', 1)   // check that the table has only one row
+      .should('have.length', 3)   // check if the table has now 3 activity suggestions 
       .eq(0)
       .children()
-      .should('have.length', 10)  // check that the row has 10 columns
+      .should('have.length', 10)  // check that the rows have 10 columns
 
-    // check the values of the columns
+
+    // - - - - - - - - - - CHECK - - - - - - - - - -
+    // check the values of the columns of the newly created activity suggestion
     cy.get('[data-cy="volunteerActivitySuggestionsTable"] tbody tr')
       .eq(0).children().eq(0).should('contain', NAME)
     
