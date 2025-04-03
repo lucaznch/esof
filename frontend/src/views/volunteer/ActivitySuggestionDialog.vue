@@ -31,6 +31,7 @@
                 item-text="name"
                 item-value="id"
                 required
+                data-cy="institutionInput"
               />
             </v-col>
             <v-col cols="12">
@@ -161,21 +162,21 @@ export default class ActivityDialog extends Vue {
   }
 
   async registerActivitySuggestion() {
-    if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
-      try {
-        const institutionId = this.selectedInstitution?.id;
-        if (!institutionId) {
-          throw new Error('Institution ID is required');
-        }
-        this.editActivitySuggestion.institutionId = institutionId;
-        const result = await RemoteServices.createActivitySuggestion(institutionId, this.editActivitySuggestion);
-        this.$emit('save-activity-suggestion', result);
+  if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
+    try {
+      const institutionId = this.selectedInstitution?.id;
+      if (!institutionId) {
+        throw new Error('Institution ID is required');
       }
-      catch (error) {
-        await this.$store.dispatch('error', error);
-      }
+      this.editActivitySuggestion.institutionId = institutionId;
+      const result = await RemoteServices.createActivitySuggestion(institutionId, this.editActivitySuggestion);
+      this.$emit('save-activity-suggestion', result);
+    }
+    catch (error) {
+      await this.$store.dispatch('error', error);
     }
   }
+}
 }
 </script>
 

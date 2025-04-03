@@ -7,6 +7,7 @@
       disable-pagination
       :hide-default-footer="true"
       :mobile-breakpoint="0"
+      data-cy="volunteerActivitySuggestionsTable"
     >
       <template v-slot:item.institutionName="{ item }">
         {{ getInstitutionName(item.institutionId) }}
@@ -43,8 +44,8 @@
 import { Component, Vue } from 'vue-property-decorator';
 import RemoteServices from '@/services/RemoteServices';
 import ActivitySuggestion from '@/models/activitysuggestion/ActivitySuggestion';
-import ActivitySuggestionDialog from '@/views/volunteer/ActivitySuggestionDialog.vue';
 import Institution from '@/models/institution/Institution';
+import ActivitySuggestionDialog from '@views/volunteer/ActivitySuggestionDialog.vue';
 
 @Component({
   components: {
@@ -59,6 +60,7 @@ export default class VolunteerActivitySuggestionsView extends Vue {
   currentActivitySuggestion: ActivitySuggestion | null = null;
   editActivitySuggestionDialog: boolean = false;
   suspendActivitySuggestionDialog: boolean = false;
+
 
   headers: object = [
     {
@@ -127,8 +129,8 @@ export default class VolunteerActivitySuggestionsView extends Vue {
     await this.$store.dispatch('loading');
     try {
       let userId = this.$store.getters.getUser.id;
-      this.activitySuggestions = await RemoteServices.getActivitySuggestionsByVolunteer(userId);
-      this.institutions = await RemoteServices.getInstitutions();
+      this.activitySuggestions = await RemoteServices.getActivitySuggestionsByVolunteer(userId);  // obtain all the activity suggestions for the logged-in volunteer
+      this.institutions = await RemoteServices.getInstitutions(); // obtain all the registered institutions in the system
     } catch (error) {
       await this.$store.dispatch('error', error);
     }
@@ -158,7 +160,7 @@ export default class VolunteerActivitySuggestionsView extends Vue {
 
   getInstitutionName(institutionId: number): string {
     const institution = this.institutions.find((inst) => inst.id === institutionId);
-    return institution ? institution.name : 'unknown';
+    return institution ? institution.name : 'Unknown Institution';
   }
 }
 </script>
