@@ -129,4 +129,147 @@ describe('ActivitySuggestion', () => {
     cy.get('[data-cy="volunteerActivitySuggestionsTable"] tbody tr')
       .eq(0).children().eq(9).should('contain', 'IN_REVIEW')
   });
+
+  it('approve activity suggestion', () => {
+
+    cy.demoMemberLogin();
+
+    cy.intercept('GET', '/users/*/getInstitution').as('getInstitutions');
+    cy.intercept('GET', '/activitySuggestions/institution/*').as('getActivitySuggestions');
+    cy.intercept('PUT', '/activitySuggestions/approve/*/institution/*').as('approveActivitySuggestion');
+
+
+    // go to InstitutionActivitySuggestionView
+    cy.get('[data-cy="institution"]').click();
+    cy.get('[data-cy="activitysuggestions"]').click();
+    cy.wait('@getInstitutions');
+    cy.wait('@getActivitySuggestions');
+
+    // - - - - - - - - - - CHECK - - - - - - - - - -
+    // check if the first activity suggestion in the table is in the IN_REVIEW state
+    cy.get('[data-cy="institutionActivitySuggestionsTable"] tbody tr')
+      .eq(0).children().eq(9).should('contain', 'IN_REVIEW')
+
+    
+    // approve activity suggestion
+    cy.get('[data-cy="institutionActivitySuggestionsTable"] tbody tr')
+      .eq(0) // Select the first row
+      .within(() => {
+        // Click the "Approve" button within the first row
+        cy.get('[data-cy="approveActivitySuggestion"]').click();
+      });
+    cy.wait('@approveActivitySuggestion');
+
+    // before logging out, save the activity suggestion name for the next test
+    cy.get('[data-cy="institutionActivitySuggestionsTable"] tbody tr')
+      .eq(0).children().eq(0).invoke('text').then((text) => {
+        cy.wrap(text).as('activitySuggestionName');
+      });
+
+    cy.logout();
+
+    // check on the volunteer side if the activity suggestion was approved
+
+    cy.demoVolunteerLogin();
+
+    cy.intercept('GET', '/activitySuggestions/volunteer/*').as('getActivitySuggestions');
+    cy.intercept('GET', '/institutions').as('getInstitutionsByVolunteer');
+  
+    // go to VolunteerActivitySuggestionView
+    cy.get('[data-cy="volunteerActivitySuggestions"]').click();
+    cy.wait('@getActivitySuggestions');
+    cy.wait('@getInstitutionsByVolunteer');
+
+    // find the activity suggestion by name in the volunteerActivitySuggestionsTable
+    cy.get('@activitySuggestionName').then((activitySuggestionName) => {
+      cy.get('[data-cy="volunteerActivitySuggestionsTable"] tbody tr')
+        .contains(activitySuggestionName)
+        .should('exist');
+    });
+
+    // - - - - - - - - - - CHECK - - - - - - - - - -
+    // find the activity suggestion by name in the volunteerActivitySuggestionsTable
+    // and check if the state is APPROVED
+    cy.get('@activitySuggestionName').then((activitySuggestionName) => {
+      cy.get('[data-cy="volunteerActivitySuggestionsTable"] tbody tr')
+        .contains(activitySuggestionName)
+        .parents('tr')
+        .find('td')
+        .eq(9)
+        .should('contain', 'APPROVED');
+    });
+
+  });
+
+  it('reject activity suggestion', () => {
+
+    cy.demoMemberLogin();
+
+    cy.intercept('GET', '/users/*/getInstitution').as('getInstitutions');
+    cy.intercept('GET', '/activitySuggestions/institution/*').as('getActivitySuggestions');
+    cy.intercept('PUT', '/activitySuggestions/reject/*/institution/*').as('rejectActivitySuggestion');
+
+
+    // go to InstitutionActivitySuggestionView
+    cy.get('[data-cy="institution"]').click();
+    cy.get('[data-cy="activitysuggestions"]').click();
+    cy.wait('@getInstitutions');
+    cy.wait('@getActivitySuggestions');
+
+    // - - - - - - - - - - CHECK - - - - - - - - - -
+    // check if the first activity suggestion in the table is in the IN_REVIEW state
+    cy.get('[data-cy="institutionActivitySuggestionsTable"] tbody tr')
+      .eq(0).children().eq(9).should('contain', 'IN_REVIEW')
+
+    
+    // reject activity suggestion
+    cy.get('[data-cy="institutionActivitySuggestionsTable"] tbody tr')
+      .eq(0) // Select the first row
+      .within(() => {
+        // Click the "Reject" button within the first row
+        cy.get('[data-cy="rejectActivitySuggestion"]').click();
+      });
+    cy.wait('@rejectActivitySuggestion');
+
+    // before logging out, save the activity suggestion name for the next test
+    cy.get('[data-cy="institutionActivitySuggestionsTable"] tbody tr')
+      .eq(0).children().eq(0).invoke('text').then((text) => {
+        cy.wrap(text).as('activitySuggestionName');
+      });
+
+    cy.logout();
+
+    // check on the volunteer side if the activity suggestion was rejected
+
+    cy.demoVolunteerLogin();
+
+    cy.intercept('GET', '/activitySuggestions/volunteer/*').as('getActivitySuggestions');
+    cy.intercept('GET', '/institutions').as('getInstitutionsByVolunteer');
+  
+    // go to VolunteerActivitySuggestionView
+    cy.get('[data-cy="volunteerActivitySuggestions"]').click();
+    cy.wait('@getActivitySuggestions');
+    cy.wait('@getInstitutionsByVolunteer');
+
+    // find the activity suggestion by name in the volunteerActivitySuggestionsTable
+    cy.get('@activitySuggestionName').then((activitySuggestionName) => {
+      cy.get('[data-cy="volunteerActivitySuggestionsTable"] tbody tr')
+        .contains(activitySuggestionName)
+        .should('exist');
+    });
+
+    // - - - - - - - - - - CHECK - - - - - - - - - -
+    // find the activity suggestion by name in the volunteerActivitySuggestionsTable
+    // and check if the state is REJECTED
+    cy.get('@activitySuggestionName').then((activitySuggestionName) => {
+      cy.get('[data-cy="volunteerActivitySuggestionsTable"] tbody tr')
+        .contains(activitySuggestionName)
+        .parents('tr')
+        .find('td')
+        .eq(9)
+        .should('contain', 'REJECTED');
+    });
+
+  });
+
 });
