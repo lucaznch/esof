@@ -11,6 +11,38 @@
       <template v-slot:item.institutionName="{ item }">
         {{ institutionName() }}
       </template>
+
+      <template v-slot:item.actions="{ item }">
+        <div class="d-flex align-center" style="gap: 8px;">
+          <v-btn
+            v-if="item.state === 'IN_REVIEW'"
+            icon
+            color="green"
+            @click="approve(item)"
+          >
+            <v-icon>mdi-thumb-up</v-icon>
+          </v-btn>
+
+          <v-btn
+            v-if="item.state === 'IN_REVIEW' || item.state === 'APPROVED'"
+            icon
+            color="red"
+            @click="reject(item)"
+          >
+            <v-icon>mdi-thumb-down</v-icon>
+          </v-btn>
+
+          <v-btn
+            v-if="item.state === 'REJECTED'"
+            icon
+            color="green"
+            @click="approve(item)"
+          >
+            <v-icon>mdi-thumb-up</v-icon>
+          </v-btn>
+        </div>
+      </template>
+
       <template v-slot:top>
         <v-card-title>
           <v-text-field
@@ -27,9 +59,10 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import RemoteServices from '@/services/RemoteServices';
 import Institution from '@/models/institution/Institution';
 import ActivitySuggestion from '@/models/activitysuggestion/ActivitySuggestion';
-import RemoteServices from '@/services/RemoteServices';
+
 
 @Component({
   components: {
@@ -100,6 +133,12 @@ export default class VolunteerActivitySuggestionsView extends Vue {
       value: 'state',
       align: 'left',
       width: '5%',
+    },
+    {
+      text: 'Actions',
+      value: 'actions',
+      align: 'left',
+      width: '5%',
     }
   ];
 
@@ -122,6 +161,29 @@ export default class VolunteerActivitySuggestionsView extends Vue {
   institutionName() {
     return this.institution.name;
   }
+
+  async approve(item: ActivitySuggestion) {
+    try {
+      if (!item.id) { throw new Error('Activity suggestion ID not found'); }
+      if (!this.institution.id) { throw new Error('Institution ID not found'); }
+      await RemoteServices.approveActivitySuggestion(item.id, this.institution.id);
+      item.state = 'APPROVED';
+    } catch (error) {
+      await this.$store.dispatch('error', error);
+    }
+  }
+
+  async reject(item: ActivitySuggestion) {
+    try {
+      if (!item.id) { throw new Error('Activity suggestion ID not found'); }
+      if (!this.institution.id) { throw new Error('Institution ID not found'); }
+      await RemoteServices.rejectActivitySuggestion(item.id, this.institution.id);
+      item.state = 'REJECTED';
+    } catch (error) {
+      await this.$store.dispatch('error', error);
+    }
+  }
+  
 }
 </script>
 

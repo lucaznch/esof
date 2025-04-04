@@ -38,6 +38,16 @@ public class ActivitySuggestionService {
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
+    public List<ActivitySuggestionDto> getActivitySuggestionsByVolunteer(Integer volunteerId) {
+        if (volunteerId == null) throw new HEException(USER_NOT_FOUND);
+        userRepository.findById(volunteerId).orElseThrow(() -> new HEException(USER_NOT_FOUND));
+
+        return this.activitySuggestionRepository.getActivitySuggestionsByVolunteerId(volunteerId).stream()
+                .map(ActivitySuggestionDto::new)
+                .toList();
+    }
+
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public ActivitySuggestionDto createActivitySuggestion(Integer userId, Integer institutionId, ActivitySuggestionDto activitySuggestionDto) {
         if (userId == null) throw new HEException(USER_NOT_FOUND);
         Volunteer volunteer = (Volunteer) userRepository.findById(userId).orElseThrow(() -> new HEException(USER_NOT_FOUND));
@@ -54,12 +64,32 @@ public class ActivitySuggestionService {
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
-    public List<ActivitySuggestionDto> getActivitySuggestionsByVolunteer(Integer volunteerId) {
-        if (volunteerId == null) throw new HEException(USER_NOT_FOUND);
-        userRepository.findById(volunteerId).orElseThrow(() -> new HEException(USER_NOT_FOUND));
+    public ActivitySuggestionDto approveActivitySuggestion(Integer activitySuggestionId, Integer institutionId) {
+        if (institutionId == null) throw new HEException(INSTITUTION_NOT_FOUND);
+        institutionRepository.findById(institutionId).orElseThrow(() -> new HEException(INSTITUTION_NOT_FOUND));
 
-        return this.activitySuggestionRepository.getActivitySuggestionsByVolunteerId(volunteerId).stream()
-                .map(ActivitySuggestionDto::new)
-                .toList();
+        if (activitySuggestionId == null) throw new HEException(ACTIVITY_SUGGESTION_NOT_FOUND);
+        ActivitySuggestion activitySuggestion = activitySuggestionRepository.findById(activitySuggestionId).orElseThrow(() -> new HEException(ACTIVITY_SUGGESTION_NOT_FOUND));
+
+        if (activitySuggestion.getInstitution().getId() != institutionId) throw new HEException(INSTITUTION_NOT_FOUND);
+
+        activitySuggestion.setState(ActivitySuggestion.State.APPROVED);
+
+        return new ActivitySuggestionDto(activitySuggestion);
+    }
+
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public ActivitySuggestionDto rejectActivitySuggestion(Integer activitySuggestionId, Integer institutionId) {
+        if (institutionId == null) throw new HEException(INSTITUTION_NOT_FOUND);
+        institutionRepository.findById(institutionId).orElseThrow(() -> new HEException(INSTITUTION_NOT_FOUND));
+
+        if (activitySuggestionId == null) throw new HEException(ACTIVITY_SUGGESTION_NOT_FOUND);
+        ActivitySuggestion activitySuggestion = activitySuggestionRepository.findById(activitySuggestionId).orElseThrow(() -> new HEException(ACTIVITY_SUGGESTION_NOT_FOUND));
+
+        if (activitySuggestion.getInstitution().getId() != institutionId) throw new HEException(INSTITUTION_NOT_FOUND);
+
+        activitySuggestion.setState(ActivitySuggestion.State.REJECTED);
+
+        return new ActivitySuggestionDto(activitySuggestion);
     }
 }

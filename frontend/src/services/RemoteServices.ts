@@ -510,6 +510,28 @@ export default class RemoteServices {
       });
   }
 
+  static async approveActivitySuggestion(activitySuggestionId: number, institutionId: number) {
+    return httpClient
+      .put(`/activitySuggestions/approve/${activitySuggestionId}/institution/${institutionId}`)
+      .then((response) => {
+        return new ActivitySuggestion(response.data);
+      })
+      .catch(async (error) => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
+  static async rejectActivitySuggestion(activitySuggestionId: number, institutionId: number) {
+    return httpClient
+      .put(`/activitySuggestions/reject/${activitySuggestionId}/institution/${institutionId}`)
+      .then((response) => {
+        return new ActivitySuggestion(response.data);
+      })
+      .catch(async (error) => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
   // Enrollment controller
 
   static async getActivityEnrollments(activityId: number) {

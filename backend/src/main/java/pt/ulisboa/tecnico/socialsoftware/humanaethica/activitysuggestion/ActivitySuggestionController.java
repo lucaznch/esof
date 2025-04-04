@@ -23,6 +23,12 @@ public class ActivitySuggestionController {
         return this.activitySuggestionService.getActivitySuggestionsByInstitution(institutionId);
     }
 
+    @GetMapping("/volunteer/{volunteerId}")
+    @PreAuthorize("hasRole('ROLE_VOLUNTEER')")
+    public List<ActivitySuggestionDto> getActivitySuggestionsByVolunteer(@PathVariable Integer volunteerId) {
+        return this.activitySuggestionService.getActivitySuggestionsByVolunteer(volunteerId);
+    }
+
     @PostMapping("/institution/{institutionId}")
     @PreAuthorize("hasRole('ROLE_VOLUNTEER')")
     public ActivitySuggestionDto createActivitySuggestion(Principal principal, @PathVariable Integer institutionId, @Valid @RequestBody ActivitySuggestionDto activitySuggestionDto) {
@@ -30,9 +36,15 @@ public class ActivitySuggestionController {
         return activitySuggestionService.createActivitySuggestion(userId, institutionId, activitySuggestionDto);
     }
 
-    @GetMapping("/volunteer/{volunteerId}")
-    @PreAuthorize("hasRole('ROLE_VOLUNTEER')")
-    public List<ActivitySuggestionDto> getActivitySuggestionsByVolunteer(@PathVariable Integer volunteerId) {
-        return this.activitySuggestionService.getActivitySuggestionsByVolunteer(volunteerId);
+    @PutMapping("/approve/{activitySuggestionId}/institution/{institutionId}")
+    @PreAuthorize("hasRole('ROLE_MEMBER') and hasPermission(#institutionId, 'INSTITUTION.MEMBER')")
+    public ActivitySuggestionDto approveActivitySuggestion(@PathVariable Integer activitySuggestionId, @PathVariable Integer institutionId) {
+        return activitySuggestionService.approveActivitySuggestion(activitySuggestionId, institutionId);
+    }
+
+    @PutMapping("/reject/{activitySuggestionId}/institution/{institutionId}")
+    @PreAuthorize("hasRole('ROLE_MEMBER') and hasPermission(#institutionId, 'INSTITUTION.MEMBER')")
+    public ActivitySuggestionDto rejectActivitySuggestion(@PathVariable Integer activitySuggestionId, @PathVariable Integer institutionId) {
+        return activitySuggestionService.rejectActivitySuggestion(activitySuggestionId, institutionId);
     }
 }
