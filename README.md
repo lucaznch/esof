@@ -12,6 +12,9 @@
 
 **HumanaEthica** is an open-source broker that aims to connect charities and non-profit organizations with volunteers.
 
+> [!NOTE]
+> This repository contains code originally developed as part of a university group project, licensed under the [MIT License](./LICENSE). The base code was copied from the last commit of the original team repository and was used in this forked environment by our sub-group to implement two assigned features.
+
 # Technologies
 
 * Require download
